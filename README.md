@@ -138,3 +138,4 @@ Nunca lo subas a un repositorio ni lo compartas.
 - Gestión de usuarios en el admin (listado de clientes) — marcada como opcional en el pedido
   original.
 # opticaSol
+# opticaSol
