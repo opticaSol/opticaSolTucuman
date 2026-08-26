@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+  color-scheme: dark;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+::selection {
+  background-color: #f5c518;
+  color: #0d0d0d;
+}
+
+select,
+option {
+  color-scheme: dark;
+  background-color: #0d0d0d;
+  color: #ffffff;
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+@layer components {
+  .input {
+    @apply w-full rounded-xl bg-sol-blanco/5 border border-sol-blanco/20 px-4 py-2.5 text-sm text-sol-blanco focus:outline-none focus:border-sol-amarillo;
+  }
+}
