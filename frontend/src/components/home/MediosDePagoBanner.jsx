@@ -17,14 +17,14 @@ const CardIcon = (
 );
 
 const MEDIOS = [
-  { titulo: 'Efectivo / Transferencia', detalle: '10% OFF', destacado: true, icon: CashIcon },
-  { titulo: 'Tarjetas de crédito', detalle: '3 cuotas sin interés', icon: CardIcon },
-  { titulo: 'Tarjetas de crédito', detalle: '6 cuotas sin interés', icon: CardIcon },
+  { titulo: 'Efectivo / Transferencia', icon: CashIcon },
+  { titulo: 'Con Mercado Pago', detalle: '3 pagos sin interés', icon: CardIcon },
+  { titulo: 'Con Mercado Pago', detalle: '6 pagos sin interés', icon: CardIcon },
 ];
 
 export default function MediosDePagoBanner() {
   return (
-    <FadeInSection className="relative bg-sol-rojo py-16 px-6 overflow-hidden">
+    <FadeInSection id="medios-pago" className="relative bg-sol-rojo py-16 px-6 overflow-hidden scroll-mt-16">
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 opacity-[0.06]"
@@ -43,21 +43,15 @@ export default function MediosDePagoBanner() {
         <div className="grid gap-5 md:grid-cols-3">
           {MEDIOS.map((m, i) => (
             <motion.div
-              key={m.titulo + m.detalle}
+              key={m.titulo + i}
               whileHover={{ y: -6 }}
-              className={`rounded-xl2 p-7 text-center shadow-card flex flex-col items-center gap-3 ${
-                m.destacado ? 'bg-sol-amarillo text-sol-negro' : 'bg-sol-negro text-sol-blanco'
-              }`}
+              className="rounded-xl2 p-7 text-center shadow-card flex flex-col items-center gap-3 bg-sol-negro text-sol-blanco"
             >
-              <span
-                className={`w-14 h-14 rounded-full flex items-center justify-center ${
-                  m.destacado ? 'bg-sol-negro text-sol-amarillo' : 'bg-sol-amarillo text-sol-negro'
-                }`}
-              >
+              <span className="w-14 h-14 rounded-full flex items-center justify-center bg-sol-amarillo text-sol-negro">
                 {m.icon}
               </span>
               <p className="font-display font-bold text-sm uppercase">{m.titulo}</p>
-              <p className="font-display font-black text-2xl">{m.detalle}</p>
+              {m.detalle && <p className="font-display font-black text-2xl">{m.detalle}</p>}
             </motion.div>
           ))}
         </div>

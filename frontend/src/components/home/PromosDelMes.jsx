@@ -1,12 +1,13 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import FadeInSection from '../ui/FadeInSection';
+import { formatDescuento } from '../../lib/formatters';
 
 export default function PromosDelMes({ promotions = [] }) {
   if (!promotions.length) return null;
 
   return (
-    <FadeInSection className="bg-sol-amarillo py-16 px-6">
+    <FadeInSection id="promos" className="bg-sol-amarillo py-16 px-6 scroll-mt-16">
       <div className="max-w-7xl mx-auto">
         <p className="font-display font-bold text-sol-negro/60 uppercase tracking-[0.2em] text-xs mb-2 text-center">
           Por tiempo limitado
@@ -25,7 +26,7 @@ export default function PromosDelMes({ promotions = [] }) {
               whileHover={{ y: -6 }}
             >
               <Link
-                to="/catalogo?enPromocion=true"
+                to="/?enPromocion=true#catalogo"
                 className="group relative rounded-xl2 overflow-hidden shadow-card aspect-[4/3] block border-2 border-sol-negro"
               >
                 <img
@@ -36,7 +37,7 @@ export default function PromosDelMes({ promotions = [] }) {
                 <div className="absolute inset-0 bg-gradient-to-t from-sol-negro/90 via-sol-negro/30 to-transparent" />
                 <div className="absolute bottom-0 p-5 w-full">
                   <span className="inline-block bg-sol-rojo text-sol-blanco text-xs font-display font-bold px-3 py-1 rounded-full mb-2 uppercase">
-                    {promo.tipoDescuento === 'porcentaje' ? `${promo.valor}% OFF` : `$${promo.valor} OFF`}
+                    {formatDescuento(promo)}
                   </span>
                   <h3 className="font-display font-extrabold text-lg text-sol-blanco leading-tight">
                     {promo.titulo}
@@ -52,7 +53,7 @@ export default function PromosDelMes({ promotions = [] }) {
 
         <div className="text-center mt-10">
           <Link
-            to="/catalogo?enPromocion=true"
+            to="/?enPromocion=true#catalogo"
             className="inline-flex items-center gap-2 rounded-full bg-sol-negro text-sol-blanco font-display font-bold px-6 py-3 hover:bg-black transition"
           >
             Ver todas las promos →
