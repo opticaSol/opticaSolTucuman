@@ -7,17 +7,17 @@ const LOGO_URL =
   'https://res.cloudinary.com/dabikk5ei/image/upload/v1787667390/logo_ongamj.png';
 
 const links = [
-  { to: '/', label: 'Inicio' },
-  { to: '/catalogo', label: 'Catálogo' },
-  { to: '/catalogo?enPromocion=true', label: 'Promos' },
+  { hash: 'promos', label: 'Promos' },
+  { hash: 'catalogo', label: 'Catálogo' },
+  { hash: 'servicios', label: 'Servicios' },
+  { hash: 'presupuesto-envios', label: 'Presupuesto y envíos' },
+  { hash: 'beneficios', label: 'Beneficios' },
+  { hash: 'medios-pago', label: 'Medios de pago' },
+  { hash: 'ubicacion', label: 'Ubicación' },
 ];
 
 function isLinkActive(link, location) {
-  const [linkPath, linkQuery] = link.to.split('?');
-  if (location.pathname !== linkPath) return false;
-  const enPromocion = new URLSearchParams(location.search).get('enPromocion') === 'true';
-  const linkIsPromos = linkQuery?.includes('enPromocion=true');
-  return linkIsPromos ? enPromocion : !enPromocion;
+  return location.pathname === '/' && location.hash === `#${link.hash}`;
 }
 
 export default function Navbar() {
@@ -38,12 +38,12 @@ export default function Navbar() {
           />
         </Link>
 
-        <nav className="flex items-center gap-8 font-display font-bold uppercase text-sm tracking-wide">
+        <nav className="flex items-center gap-5 overflow-x-auto scrollbar-none font-display font-bold uppercase text-xs tracking-wide mx-4">
           {links.map((link) => (
             <Link
-              key={link.label}
-              to={link.to}
-              className={`transition-colors hover:text-sol-amarillo ${
+              key={link.hash}
+              to={`/#${link.hash}`}
+              className={`whitespace-nowrap transition-colors hover:text-sol-amarillo ${
                 isLinkActive(link, location) ? 'text-sol-amarillo' : 'text-sol-blanco'
               }`}
             >

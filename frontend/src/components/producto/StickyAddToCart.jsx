@@ -19,12 +19,11 @@ export default function StickyAddToCart({ product, visible, onAdd }) {
             </div>
             <motion.button
               onClick={onAdd}
-              disabled={product.stock === 0}
-              whileHover={{ scale: product.stock === 0 ? 1 : 1.04 }}
-              whileTap={{ scale: product.stock === 0 ? 1 : 0.95 }}
-              className="shrink-0 rounded-full bg-sol-amarillo text-sol-negro font-display font-bold px-5 py-2.5 disabled:opacity-40"
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.95 }}
+              className="shrink-0 rounded-full bg-sol-amarillo text-sol-negro font-display font-bold px-5 py-2.5"
             >
-              {product.stock === 0 ? 'Agotado' : 'Agregar'}
+              Agregar
             </motion.button>
           </div>
         </motion.div>
