@@ -4,11 +4,13 @@ const initialFilters = {
   categoria: '',
   genero: '',
   tipoContacto: '',
+  tipoLenteRecetado: '',
   marca: '',
   colorArmazon: '',
   precioMin: '',
   precioMax: '',
   enPromocion: false,
+  irrompible: false,
   q: '',
 };
 

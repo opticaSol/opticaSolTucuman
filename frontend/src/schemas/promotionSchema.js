@@ -11,7 +11,9 @@ export const promotionSchema = z
     fechaInicio: z.string().min(1, 'La fecha de inicio es obligatoria'),
     fechaFin: z.string().optional().or(z.literal('')),
     bannerImagen: z.string().url('Subí un banner'),
-    categoriasIncluidas: z.array(z.enum(['sol', 'contacto', 'recetados'])).optional(),
+    categoriasIncluidas: z
+      .array(z.enum(['sol', 'contacto', 'recetados', 'armazones', 'liquidos', 'colgantes']))
+      .optional(),
     activa: z.boolean().optional(),
   })
   .superRefine((data, ctx) => {
