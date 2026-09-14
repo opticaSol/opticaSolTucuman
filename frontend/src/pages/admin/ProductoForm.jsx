@@ -9,18 +9,23 @@ import { fetchAdminProduct, createProduct, updateProduct } from '../../lib/api';
 import ImageUploader from '../../components/admin/ImageUploader';
 
 const CATEGORIAS = [
-  { value: 'sol', label: 'Lentes de Sol' },
+  { value: 'sol', label: 'Anteojos de Sol' },
   { value: 'contacto', label: 'Lentes de Contacto' },
   { value: 'recetados', label: 'Lentes Recetados' },
+  { value: 'armazones', label: 'Armazones de Receta' },
+  { value: 'liquidos', label: 'Líquidos' },
+  { value: 'colgantes', label: 'Colgantes' },
 ];
 const GENEROS = ['dama', 'caballero', 'niños'];
 const TIPOS_CONTACTO = ['diarias', 'mensuales', 'toricas', 'color'];
+const TIPOS_LENTE_RECETADO = ['multifocales', 'bifocales', 'ocupacionales', 'monofocales'];
 
 const emptyValues = {
   nombre: '',
   categoria: 'sol',
   subcategoriaGenero: '',
   tipoContacto: '',
+  tipoLenteRecetado: '',
   marca: '',
   precio: 0,
   precioDescuento: '',
@@ -30,6 +35,7 @@ const emptyValues = {
   descripcion: '',
   materiales: '',
   proteccionUV: false,
+  irrompible: false,
   colorArmazon: '',
   activo: true,
 };
@@ -59,6 +65,7 @@ export default function ProductoForm() {
         ...product,
         subcategoriaGenero: product.subcategoriaGenero || '',
         tipoContacto: product.tipoContacto || '',
+        tipoLenteRecetado: product.tipoLenteRecetado || '',
         precioDescuento: product.precioDescuento ?? '',
       });
       setLoading(false);
@@ -71,6 +78,7 @@ export default function ProductoForm() {
       precioDescuento: values.precioDescuento === '' ? null : values.precioDescuento,
       subcategoriaGenero: values.subcategoriaGenero || null,
       tipoContacto: values.tipoContacto || null,
+      tipoLenteRecetado: values.tipoLenteRecetado || null,
     };
 
     try {
@@ -114,7 +122,7 @@ export default function ProductoForm() {
           <input {...register('nombre')} className="input" />
         </Field>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Field label="Categoría" error={errors.categoria?.message}>
             <select {...register('categoria')} className="input">
               {CATEGORIAS.map((c) => (
@@ -130,8 +138,8 @@ export default function ProductoForm() {
           </Field>
         </div>
 
-        {categoria === 'contacto' ? (
-          <Field label="Tipo" error={errors.tipoContacto?.message}>
+        {categoria === 'contacto' && (
+          <Field label="Tipo (opcional)" error={errors.tipoContacto?.message}>
             <select {...register('tipoContacto')} className="input">
               <option value="">Elegí un tipo</option>
               {TIPOS_CONTACTO.map((t) => (
@@ -141,8 +149,23 @@ export default function ProductoForm() {
               ))}
             </select>
           </Field>
-        ) : (
-          <Field label="Género / edad" error={errors.subcategoriaGenero?.message}>
+        )}
+
+        {categoria === 'recetados' && (
+          <Field label="Tipo de lente" error={errors.tipoLenteRecetado?.message}>
+            <select {...register('tipoLenteRecetado')} className="input">
+              <option value="">Elegí un tipo</option>
+              {TIPOS_LENTE_RECETADO.map((t) => (
+                <option key={t} value={t}>
+                  {t}
+                </option>
+              ))}
+            </select>
+          </Field>
+        )}
+
+        {['sol', 'armazones'].includes(categoria) && (
+          <Field label="Género / edad (opcional)" error={errors.subcategoriaGenero?.message}>
             <select {...register('subcategoriaGenero')} className="input">
               <option value="">Elegí una opción</option>
               {GENEROS.map((g) => (
@@ -154,7 +177,7 @@ export default function ProductoForm() {
           </Field>
         )}
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Field label="Precio" error={errors.precio?.message}>
             <input type="number" step="0.01" {...register('precio')} className="input" />
           </Field>
@@ -163,7 +186,7 @@ export default function ProductoForm() {
           </Field>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Field label="Stock" error={errors.stock?.message}>
             <input type="number" {...register('stock')} className="input" />
           </Field>
@@ -172,7 +195,7 @@ export default function ProductoForm() {
           </Field>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Field label="Color de armazón">
             <input {...register('colorArmazon')} className="input" />
           </Field>
@@ -188,6 +211,11 @@ export default function ProductoForm() {
         <label className="flex items-center gap-2 text-sm">
           <input type="checkbox" {...register('proteccionUV')} />
           Con protección UV
+        </label>
+
+        <label className="flex items-center gap-2 text-sm">
+          <input type="checkbox" {...register('irrompible')} />
+          Armazón irrompible (para niños)
         </label>
 
         <label className="flex items-center gap-2 text-sm">

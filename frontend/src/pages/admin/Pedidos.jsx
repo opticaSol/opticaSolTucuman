@@ -26,6 +26,14 @@ const ESTADO_STYLE = {
   cancelado: 'bg-sol-rojo/20 text-sol-rojo',
 };
 
+function WhatsAppIcon({ className = 'w-3.5 h-3.5' }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
+      <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.81.48 3.53 1.32 5.02L2 22l5.25-1.38a9.86 9.86 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91C21.96 6.45 17.5 2 12.04 2Zm5.78 14.14c-.24.68-1.4 1.32-1.93 1.4-.5.08-1.12.11-1.8-.11a15.9 15.9 0 0 1-1.63-.6c-2.87-1.24-4.74-4.13-4.88-4.32-.14-.19-1.17-1.55-1.17-2.96 0-1.4.74-2.09 1-2.38.26-.28.57-.35.76-.35.19 0 .38 0 .55.01.18.01.41-.07.64.49.24.57.81 1.98.88 2.12.07.14.12.31.02.5-.1.19-.15.31-.29.48-.14.17-.3.37-.43.5-.14.14-.29.29-.13.57.17.28.75 1.24 1.61 2.01 1.11.99 2.04 1.29 2.32 1.44.28.14.44.12.6-.07.17-.19.71-.83.9-1.11.19-.28.38-.24.64-.14.26.09 1.66.78 1.94.93.28.14.47.21.53.33.07.12.07.71-.17 1.39Z" />
+    </svg>
+  );
+}
+
 export default function Pedidos() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -212,105 +220,164 @@ export default function Pedidos() {
         ))}
       </div>
 
-      <div className="overflow-x-auto rounded-xl2 border border-sol-blanco/10">
-        <table className="w-full text-sm">
-          <thead className="bg-sol-blanco/5 text-left text-xs uppercase text-sol-blanco/50">
-            <tr>
-              <th className="px-4 py-3">Pedido</th>
-              <th className="px-4 py-3">Cliente</th>
-              <th className="px-4 py-3">Items</th>
-              <th className="px-4 py-3">Total</th>
-              <th className="px-4 py-3">Fecha</th>
-              <th className="px-4 py-3">Estado</th>
-              <th className="px-4 py-3"></th>
-              <th className="px-4 py-3"></th>
-            </tr>
-          </thead>
-          <tbody>
-            {loading ? (
-              <tr>
-                <td colSpan={8} className="px-4 py-6 text-center text-sol-blanco/50">
-                  Cargando...
-                </td>
-              </tr>
-            ) : orders.length === 0 ? (
-              <tr>
-                <td colSpan={8} className="px-4 py-6 text-center text-sol-blanco/50">
-                  No hay pedidos.
-                </td>
-              </tr>
-            ) : (
-              orders.map((order) => (
-                <tr key={order._id} className="border-t border-sol-blanco/10 align-top">
-                  <td className="px-4 py-3 font-display font-bold">
-                    #{order._id.slice(-6).toUpperCase()}
-                  </td>
-                  <td className="px-4 py-3">
-                    <p>{order.cliente?.nombre}</p>
-                    <p className="text-xs text-sol-blanco/50">{order.cliente?.email}</p>
-                  </td>
-                  <td className="px-4 py-3 text-sol-blanco/70 max-w-xs">
-                    {order.items.map((i) => `${i.cantidad}x ${i.nombre}`).join(', ')}
-                  </td>
-                  <td className="px-4 py-3">{formatPrice(order.total)}</td>
-                  <td className="px-4 py-3 text-sol-blanco/60">
+      {loading ? (
+        <p className="text-sol-blanco/50 text-center py-6">Cargando...</p>
+      ) : orders.length === 0 ? (
+        <p className="text-sol-blanco/50 text-center py-6">No hay pedidos.</p>
+      ) : (
+        <>
+          {/* Mobile: tarjetas */}
+          <div className="flex flex-col gap-3 md:hidden">
+            {orders.map((order) => (
+              <div key={order._id} className="rounded-xl2 border border-sol-blanco/10 p-4 flex flex-col gap-2">
+                <div className="flex items-center justify-between">
+                  <span className="font-display font-bold">#{order._id.slice(-6).toUpperCase()}</span>
+                  <span className="text-xs text-sol-blanco/60">
                     {new Date(order.createdAt).toLocaleDateString('es-AR')}
-                  </td>
-                  <td className="px-4 py-3">
-                    <select
-                      value={order.estado}
-                      onChange={(e) => handleChangeEstado(order, e.target.value)}
-                      className={`rounded-full px-3 py-1.5 text-xs font-display font-bold border-none focus:outline-none ${ESTADO_STYLE[order.estado]}`}
-                    >
-                      {ESTADOS.filter((e) => e.value).map((e) => (
-                        <option key={e.value} value={e.value}>
-                          {e.label}
-                        </option>
-                      ))}
-                    </select>
-                  </td>
-                  <td className="px-4 py-3">
-                    {order.telefonoContacto ? (
-                      <a
-                        href={buildWhatsAppLink(
-                          order.telefonoContacto,
-                          `Hola ${order.cliente?.nombre || ''}! Te escribo de Óptica Sol por tu pedido #${order._id.slice(-6).toUpperCase()} para coordinar el envío.`
-                        )}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 rounded-full bg-[#25D366]/15 text-[#25D366] text-xs font-display font-bold px-3 py-1.5 hover:bg-[#25D366]/25 transition-colors whitespace-nowrap"
-                      >
-                        <svg viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5">
-                          <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.81.48 3.53 1.32 5.02L2 22l5.25-1.38a9.86 9.86 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91C21.96 6.45 17.5 2 12.04 2Zm5.78 14.14c-.24.68-1.4 1.32-1.93 1.4-.5.08-1.12.11-1.8-.11a15.9 15.9 0 0 1-1.63-.6c-2.87-1.24-4.74-4.13-4.88-4.32-.14-.19-1.17-1.55-1.17-2.96 0-1.4.74-2.09 1-2.38.26-.28.57-.35.76-.35.19 0 .38 0 .55.01.18.01.41-.07.64.49.24.57.81 1.98.88 2.12.07.14.12.31.02.5-.1.19-.15.31-.29.48-.14.17-.3.37-.43.5-.14.14-.29.29-.13.57.17.28.75 1.24 1.61 2.01 1.11.99 2.04 1.29 2.32 1.44.28.14.44.12.6-.07.17-.19.71-.83.9-1.11.19-.28.38-.24.64-.14.26.09 1.66.78 1.94.93.28.14.47.21.53.33.07.12.07.71-.17 1.39Z" />
-                        </svg>
-                        WhatsApp
-                      </a>
-                    ) : (
-                      <span className="text-xs text-sol-blanco/30">Sin teléfono</span>
+                  </span>
+                </div>
+                <div>
+                  <p className="text-sm">{order.cliente?.nombre}</p>
+                  <p className="text-xs text-sol-blanco/50">{order.cliente?.email}</p>
+                </div>
+                <p className="text-xs text-sol-blanco/70">
+                  {order.items.map((i) => `${i.cantidad}x ${i.nombre}`).join(', ')}
+                </p>
+                <p className="text-sm font-bold">{formatPrice(order.total)}</p>
+
+                <select
+                  value={order.estado}
+                  onChange={(e) => handleChangeEstado(order, e.target.value)}
+                  className={`w-fit rounded-full px-3 py-1.5 text-xs font-display font-bold border-none focus:outline-none ${ESTADO_STYLE[order.estado]}`}
+                >
+                  {ESTADOS.filter((e) => e.value).map((e) => (
+                    <option key={e.value} value={e.value}>
+                      {e.label}
+                    </option>
+                  ))}
+                </select>
+
+                {order.telefonoContacto ? (
+                  <a
+                    href={buildWhatsAppLink(
+                      order.telefonoContacto,
+                      `Hola ${order.cliente?.nombre || ''}! Te escribo de Óptica Sol por tu pedido #${order._id.slice(-6).toUpperCase()} para coordinar el envío.`
                     )}
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex gap-2 whitespace-nowrap">
-                      <button
-                        onClick={() => handleEdit(order)}
-                        className="rounded-full bg-sol-blanco/10 text-sol-blanco text-xs font-display font-bold px-3 py-1.5 hover:bg-sol-blanco/20 transition-colors"
-                      >
-                        Editar
-                      </button>
-                      <button
-                        onClick={() => handleDelete(order)}
-                        className="rounded-full bg-sol-rojo/15 text-sol-rojo text-xs font-display font-bold px-3 py-1.5 hover:bg-sol-rojo/25 transition-colors"
-                      >
-                        Eliminar
-                      </button>
-                    </div>
-                  </td>
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 w-fit rounded-full bg-[#25D366]/15 text-[#25D366] text-xs font-display font-bold px-3 py-1.5"
+                  >
+                    <WhatsAppIcon />
+                    WhatsApp
+                  </a>
+                ) : (
+                  <span className="text-xs text-sol-blanco/30">Sin teléfono</span>
+                )}
+
+                <div className="flex gap-4 pt-1">
+                  <button
+                    onClick={() => handleEdit(order)}
+                    className="text-sol-blanco hover:underline text-xs font-bold"
+                  >
+                    Editar
+                  </button>
+                  <button
+                    onClick={() => handleDelete(order)}
+                    className="text-sol-rojo hover:underline text-xs font-bold"
+                  >
+                    Eliminar
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Desktop: tabla */}
+          <div className="hidden md:block overflow-x-auto rounded-xl2 border border-sol-blanco/10">
+            <table className="w-full text-sm">
+              <thead className="bg-sol-blanco/5 text-left text-xs uppercase text-sol-blanco/50">
+                <tr>
+                  <th className="px-4 py-3">Pedido</th>
+                  <th className="px-4 py-3">Cliente</th>
+                  <th className="px-4 py-3">Items</th>
+                  <th className="px-4 py-3">Total</th>
+                  <th className="px-4 py-3">Fecha</th>
+                  <th className="px-4 py-3">Estado</th>
+                  <th className="px-4 py-3"></th>
+                  <th className="px-4 py-3"></th>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
+              </thead>
+              <tbody>
+                {orders.map((order) => (
+                  <tr key={order._id} className="border-t border-sol-blanco/10 align-top">
+                    <td className="px-4 py-3 font-display font-bold">
+                      #{order._id.slice(-6).toUpperCase()}
+                    </td>
+                    <td className="px-4 py-3">
+                      <p>{order.cliente?.nombre}</p>
+                      <p className="text-xs text-sol-blanco/50">{order.cliente?.email}</p>
+                    </td>
+                    <td className="px-4 py-3 text-sol-blanco/70 max-w-xs">
+                      {order.items.map((i) => `${i.cantidad}x ${i.nombre}`).join(', ')}
+                    </td>
+                    <td className="px-4 py-3">{formatPrice(order.total)}</td>
+                    <td className="px-4 py-3 text-sol-blanco/60">
+                      {new Date(order.createdAt).toLocaleDateString('es-AR')}
+                    </td>
+                    <td className="px-4 py-3">
+                      <select
+                        value={order.estado}
+                        onChange={(e) => handleChangeEstado(order, e.target.value)}
+                        className={`rounded-full px-3 py-1.5 text-xs font-display font-bold border-none focus:outline-none ${ESTADO_STYLE[order.estado]}`}
+                      >
+                        {ESTADOS.filter((e) => e.value).map((e) => (
+                          <option key={e.value} value={e.value}>
+                            {e.label}
+                          </option>
+                        ))}
+                      </select>
+                    </td>
+                    <td className="px-4 py-3">
+                      {order.telefonoContacto ? (
+                        <a
+                          href={buildWhatsAppLink(
+                            order.telefonoContacto,
+                            `Hola ${order.cliente?.nombre || ''}! Te escribo de Óptica Sol por tu pedido #${order._id.slice(-6).toUpperCase()} para coordinar el envío.`
+                          )}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 rounded-full bg-[#25D366]/15 text-[#25D366] text-xs font-display font-bold px-3 py-1.5 hover:bg-[#25D366]/25 transition-colors whitespace-nowrap"
+                        >
+                          <WhatsAppIcon />
+                          WhatsApp
+                        </a>
+                      ) : (
+                        <span className="text-xs text-sol-blanco/30">Sin teléfono</span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex gap-2 whitespace-nowrap">
+                        <button
+                          onClick={() => handleEdit(order)}
+                          className="rounded-full bg-sol-blanco/10 text-sol-blanco text-xs font-display font-bold px-3 py-1.5 hover:bg-sol-blanco/20 transition-colors"
+                        >
+                          Editar
+                        </button>
+                        <button
+                          onClick={() => handleDelete(order)}
+                          className="rounded-full bg-sol-rojo/15 text-sol-rojo text-xs font-display font-bold px-3 py-1.5 hover:bg-sol-rojo/25 transition-colors"
+                        >
+                          Eliminar
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
+      )}
 
       <Pagination page={page} totalPages={totalPages} onChange={setPage} />
     </div>
