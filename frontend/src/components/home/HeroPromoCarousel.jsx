@@ -67,7 +67,7 @@ export default function HeroPromoCarousel({ promotions = [] }) {
             <p className="max-w-xl text-sol-blanco/80">{promo.descripcion}</p>
             {promo.fechaFin && <CountdownTimer endDate={promo.fechaFin} />}
             <Link
-              to="/catalogo?enPromocion=true"
+              to="/?enPromocion=true#catalogo"
               className="group mt-2 inline-flex items-center gap-2 rounded-full bg-sol-amarillo text-sol-negro font-display font-extrabold px-8 py-3.5 hover:brightness-95 transition shadow-card"
             >
               Ver promo
