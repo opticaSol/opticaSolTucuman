@@ -3,6 +3,9 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { fetchDashboardStats } from '../../lib/api';
 import { formatPrice } from '../../lib/formatters';
+import Pagination from '../../components/ui/Pagination';
+
+const ALERTAS_POR_PAGINA = 10;
 
 function StatCard({ label, value, accent, delay = 0, to, onClick }) {
   const content = (
@@ -37,6 +40,7 @@ function StatCard({ label, value, accent, delay = 0, to, onClick }) {
 
 export default function Dashboard() {
   const [stats, setStats] = useState(null);
+  const [alertasPage, setAlertasPage] = useState(1);
 
   useEffect(() => {
     fetchDashboardStats().then(setStats);
@@ -89,27 +93,45 @@ export default function Dashboard() {
           <h2 className="font-display font-extrabold uppercase text-sm mb-4">
             Productos con stock bajo o agotado
           </h2>
-          <div className="flex flex-col gap-2">
-            {[...stats.agotados, ...stats.stockBajo].map((p) => (
-              <Link
-                key={p._id}
-                to={`/admin/productos/${p._id}`}
-                className="flex items-center justify-between rounded-lg px-3 py-2 hover:bg-sol-blanco/5 transition-colors"
-              >
-                <span className="text-sm">{p.nombre}</span>
-                <span className="flex items-center gap-3">
-                  <span className="text-xs text-sol-blanco/50">{formatPrice(p.precio)}</span>
-                  <span
-                    className={`text-xs font-display font-bold px-2 py-0.5 rounded-full ${
-                      p.stock === 0 ? 'bg-sol-negro border border-sol-rojo text-sol-rojo' : 'bg-sol-rojo text-sol-blanco'
-                    }`}
-                  >
-                    {p.stock === 0 ? 'Agotado' : `Stock: ${p.stock}`}
-                  </span>
-                </span>
-              </Link>
-            ))}
-          </div>
+          {(() => {
+            const alertas = [...stats.agotados, ...stats.stockBajo];
+            const totalAlertasPages = Math.ceil(alertas.length / ALERTAS_POR_PAGINA) || 1;
+            const paginaActual = Math.min(alertasPage, totalAlertasPages);
+            const visibles = alertas.slice(
+              (paginaActual - 1) * ALERTAS_POR_PAGINA,
+              paginaActual * ALERTAS_POR_PAGINA
+            );
+            return (
+              <>
+                <div className="flex flex-col gap-2">
+                  {visibles.map((p) => (
+                    <Link
+                      key={p._id}
+                      to={`/admin/productos/${p._id}`}
+                      className="flex items-center justify-between rounded-lg px-3 py-2 hover:bg-sol-blanco/5 transition-colors"
+                    >
+                      <span className="text-sm">{p.nombre}</span>
+                      <span className="flex items-center gap-3">
+                        <span className="text-xs text-sol-blanco/50">{formatPrice(p.precio)}</span>
+                        <span
+                          className={`text-xs font-display font-bold px-2 py-0.5 rounded-full ${
+                            p.stock === 0
+                              ? 'bg-sol-negro border border-sol-rojo text-sol-rojo'
+                              : 'bg-sol-rojo text-sol-blanco'
+                          }`}
+                        >
+                          {p.stock === 0 ? 'Agotado' : `Stock: ${p.stock}`}
+                        </span>
+                      </span>
+                    </Link>
+                  ))}
+                </div>
+                <div className="mt-4">
+                  <Pagination page={paginaActual} totalPages={totalAlertasPages} onChange={setAlertasPage} />
+                </div>
+              </>
+            );
+          })()}
         </motion.div>
       )}
     </div>

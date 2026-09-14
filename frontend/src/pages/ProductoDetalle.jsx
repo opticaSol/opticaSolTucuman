@@ -84,12 +84,11 @@ export default function ProductoDetalle() {
           <motion.button
             ref={addToCartRef}
             onClick={handleAddToCart}
-            disabled={product.stock === 0}
-            whileHover={{ scale: product.stock === 0 ? 1 : 1.02 }}
-            whileTap={{ scale: product.stock === 0 ? 1 : 0.97 }}
-            className="mt-2 rounded-full bg-sol-amarillo text-sol-negro font-display font-bold py-3.5 disabled:opacity-40"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.97 }}
+            className="mt-2 rounded-full bg-sol-amarillo text-sol-negro font-display font-bold py-3.5"
           >
-            {product.stock === 0 ? 'Sin stock' : 'Agregar al carrito'}
+            Agregar al carrito
           </motion.button>
         </div>
       </div>
