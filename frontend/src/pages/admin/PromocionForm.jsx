@@ -9,9 +9,12 @@ import { fetchAdminPromotion, createPromotion, updatePromotion } from '../../lib
 import ImageUploader from '../../components/admin/ImageUploader';
 
 const CATEGORIAS = [
-  { value: 'sol', label: 'Lentes de Sol' },
+  { value: 'sol', label: 'Anteojos de Sol' },
   { value: 'contacto', label: 'Lentes de Contacto' },
   { value: 'recetados', label: 'Lentes Recetados' },
+  { value: 'armazones', label: 'Armazones de Receta' },
+  { value: 'liquidos', label: 'Líquidos' },
+  { value: 'colgantes', label: 'Colgantes' },
 ];
 
 function toDateInput(value) {
@@ -109,7 +112,7 @@ export default function PromocionForm() {
           <textarea {...register('descripcion')} rows={2} className="input" />
         </Field>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Field label="Tipo de descuento" error={errors.tipoDescuento?.message}>
             <select {...register('tipoDescuento')} className="input">
               <option value="porcentaje">Porcentaje (%)</option>
@@ -121,7 +124,7 @@ export default function PromocionForm() {
           </Field>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Field label="Fecha de inicio" error={errors.fechaInicio?.message}>
             <input type="date" {...register('fechaInicio')} className="input" />
           </Field>
