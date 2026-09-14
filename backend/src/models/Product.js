@@ -7,9 +7,9 @@ const productSchema = new mongoose.Schema(
     categoria: {
       type: String,
       required: true,
-      enum: ['sol', 'contacto', 'recetados'],
+      enum: ['sol', 'contacto', 'recetados', 'armazones', 'liquidos', 'colgantes'],
     },
-    // Requerido para 'sol' y 'recetados'
+    // Requerido para 'sol' y 'armazones'
     subcategoriaGenero: {
       type: String,
       enum: ['dama', 'caballero', 'niños', null],
@@ -19,6 +19,12 @@ const productSchema = new mongoose.Schema(
     tipoContacto: {
       type: String,
       enum: ['diarias', 'mensuales', 'toricas', 'color', null],
+      default: null,
+    },
+    // Requerido para 'recetados'
+    tipoLenteRecetado: {
+      type: String,
+      enum: ['multifocales', 'bifocales', 'ocupacionales', 'monofocales', null],
       default: null,
     },
 
@@ -40,6 +46,7 @@ const productSchema = new mongoose.Schema(
     descripcion: { type: String, default: '' },
     materiales: { type: String, default: '' },
     proteccionUV: { type: Boolean, default: false },
+    irrompible: { type: Boolean, default: false },
     colorArmazon: { type: String, default: '' },
 
     ventasCount: { type: Number, default: 0 },
@@ -49,6 +56,6 @@ const productSchema = new mongoose.Schema(
 );
 
 productSchema.index({ nombre: 'text', marca: 'text', descripcion: 'text' });
-productSchema.index({ categoria: 1, subcategoriaGenero: 1, tipoContacto: 1 });
+productSchema.index({ categoria: 1, subcategoriaGenero: 1, tipoContacto: 1, tipoLenteRecetado: 1 });
 
 module.exports = mongoose.model('Product', productSchema);

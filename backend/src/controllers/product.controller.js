@@ -12,10 +12,8 @@ function handleValidation(req, res) {
 }
 
 function validateCategoryFields(body) {
-  if (body.categoria === 'contacto') {
-    if (!body.tipoContacto) return 'El tipo de lente de contacto es obligatorio';
-  } else if (!body.subcategoriaGenero) {
-    return 'El género/edad es obligatorio para sol y recetados';
+  if (body.categoria === 'recetados' && !body.tipoLenteRecetado) {
+    return 'El tipo de lente recetado es obligatorio';
   }
   return null;
 }
@@ -26,11 +24,13 @@ async function listProducts(req, res, next) {
       categoria,
       genero,
       tipoContacto,
+      tipoLenteRecetado,
       marca,
       colorArmazon,
       precioMin,
       precioMax,
       enPromocion,
+      irrompible,
       q,
       page = 1,
       limit = 12,
@@ -41,8 +41,10 @@ async function listProducts(req, res, next) {
     if (categoria) filter.categoria = categoria;
     if (genero) filter.subcategoriaGenero = genero;
     if (tipoContacto) filter.tipoContacto = tipoContacto;
+    if (tipoLenteRecetado) filter.tipoLenteRecetado = tipoLenteRecetado;
     if (marca) filter.marca = marca;
     if (colorArmazon) filter.colorArmazon = colorArmazon;
+    if (irrompible === 'true') filter.irrompible = true;
 
     if (precioMin || precioMax) {
       filter.precio = {};
@@ -86,6 +88,7 @@ async function getProductById(req, res, next) {
     const product = await Product.findOne({
       _id: req.params.id,
       activo: true,
+      nombre: { $ne: 'Producto sin nombre' },
     });
     if (!product) {
       return res.status(404).json({ message: 'Producto no encontrado' });
@@ -106,6 +109,7 @@ async function listRelatedProducts(req, res, next) {
       _id: { $ne: product._id },
       categoria: product.categoria,
       activo: true,
+      nombre: { $ne: 'Producto sin nombre' },
     }).limit(4);
     res.json(related.map(serializeProduct));
   } catch (err) {
@@ -116,8 +120,12 @@ async function listRelatedProducts(req, res, next) {
 async function listFilterOptions(req, res, next) {
   try {
     const [marcas, coloresArmazon] = await Promise.all([
-      Product.distinct('marca', { activo: true }),
-      Product.distinct('colorArmazon', { activo: true, colorArmazon: { $ne: '' } }),
+      Product.distinct('marca', { activo: true, marca: { $ne: 'Sin marca' } }),
+      Product.distinct('colorArmazon', {
+        activo: true,
+        marca: { $ne: 'Sin marca' },
+        colorArmazon: { $ne: '' },
+      }),
     ]);
     res.json({ marcas: marcas.sort(), coloresArmazon: coloresArmazon.sort() });
   } catch (err) {
@@ -127,10 +135,39 @@ async function listFilterOptions(req, res, next) {
 
 async function adminListProducts(req, res, next) {
   try {
-    const { q, categoria, page = 1, limit = 20 } = req.query;
+    const {
+      q,
+      categoria,
+      genero,
+      tipoContacto,
+      tipoLenteRecetado,
+      marca,
+      colorArmazon,
+      precioMin,
+      precioMax,
+      enPromocion,
+      irrompible,
+      page = 1,
+      limit = 20,
+    } = req.query;
 
     const filter = {};
     if (categoria) filter.categoria = categoria;
+    if (genero) filter.subcategoriaGenero = genero;
+    if (tipoContacto) filter.tipoContacto = tipoContacto;
+    if (tipoLenteRecetado) filter.tipoLenteRecetado = tipoLenteRecetado;
+    if (marca) filter.marca = marca;
+    if (colorArmazon) filter.colorArmazon = colorArmazon;
+    if (irrompible === 'true') filter.irrompible = true;
+    if (precioMin || precioMax) {
+      filter.precio = {};
+      if (precioMin) filter.precio.$gte = Number(precioMin);
+      if (precioMax) filter.precio.$lte = Number(precioMax);
+    }
+    if (enPromocion === 'true') {
+      filter.precioDescuento = { $ne: null, $exists: true };
+      filter.$expr = { $lt: ['$precioDescuento', '$precio'] };
+    }
     if (q) filter.$text = { $search: q };
 
     const pageNum = Math.max(1, Number(page));
@@ -203,6 +240,40 @@ async function updateProduct(req, res, next) {
   }
 }
 
+const CATEGORIAS_VALIDAS = ['sol', 'contacto', 'recetados', 'armazones', 'liquidos', 'colgantes'];
+
+// Crea un producto "borrador" por cada imagen (nombre/marca/precio de relleno)
+// para no tener que dar de alta uno por uno cuando se cargan muchas fotos
+// juntas. Quedan activos (visibles en el catálogo) de una.
+async function bulkCreateProducts(req, res, next) {
+  try {
+    const { imagenes, categoria = 'sol' } = req.body;
+
+    if (!Array.isArray(imagenes) || imagenes.length === 0) {
+      return res.status(400).json({ message: 'Subí al menos una imagen' });
+    }
+    if (!CATEGORIAS_VALIDAS.includes(categoria)) {
+      return res.status(400).json({ message: 'Categoría inválida' });
+    }
+
+    const productos = await Product.insertMany(
+      imagenes.map((url) => ({
+        nombre: 'Producto sin nombre',
+        categoria,
+        marca: 'Sin marca',
+        precio: 0,
+        stock: 0,
+        imagenes: [url],
+        activo: true,
+      }))
+    );
+
+    res.status(201).json({ creados: productos.length, productos: productos.map(serializeProduct) });
+  } catch (err) {
+    next(err);
+  }
+}
+
 async function deleteProduct(req, res, next) {
   try {
     const product = await Product.findByIdAndDelete(req.params.id);
@@ -225,4 +296,5 @@ module.exports = {
   createProduct,
   updateProduct,
   deleteProduct,
+  bulkCreateProducts,
 };
