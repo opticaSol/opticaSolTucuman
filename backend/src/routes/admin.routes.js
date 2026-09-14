@@ -11,6 +11,7 @@ const {
   createProduct,
   updateProduct,
   deleteProduct,
+  bulkCreateProducts,
 } = require('../controllers/product.controller');
 const {
   adminListPromotions,
@@ -40,7 +41,9 @@ router.get('/dashboard', getDashboardStats);
 
 const productValidation = [
   body('nombre').trim().notEmpty().withMessage('El nombre es obligatorio'),
-  body('categoria').isIn(['sol', 'contacto', 'recetados']).withMessage('Categoría inválida'),
+  body('categoria')
+    .isIn(['sol', 'contacto', 'recetados', 'armazones', 'liquidos', 'colgantes'])
+    .withMessage('Categoría inválida'),
   body('marca').trim().notEmpty().withMessage('La marca es obligatoria'),
   body('precio').isFloat({ min: 0 }).withMessage('El precio debe ser mayor o igual a 0'),
   body('stock').isInt({ min: 0 }).withMessage('El stock debe ser mayor o igual a 0'),
@@ -50,6 +53,7 @@ const productValidation = [
 router.get('/products', adminListProducts);
 router.get('/products/:id', adminGetProduct);
 router.post('/products', productValidation, createProduct);
+router.post('/products/bulk', bulkCreateProducts);
 router.put('/products/:id', productValidation, updateProduct);
 router.delete('/products/:id', deleteProduct);
 
