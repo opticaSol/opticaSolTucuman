@@ -5,14 +5,6 @@ const icons = {
   home: (
     <path d="M3 11.5 12 4l9 7.5M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9" />
   ),
-  catalogo: (
-    <>
-      <circle cx="9" cy="12" r="4" />
-      <circle cx="17" cy="12" r="3" />
-      <path d="M13 12h1" />
-    </>
-  ),
-  promos: <path d="M4 4h8l8 8-8 8-8-8Zm4.5 4.5h.01" strokeLinejoin="round" />,
   carrito: (
     <>
       <circle cx="9" cy="20" r="1.4" />
@@ -45,18 +37,15 @@ function TabIcon({ name, className }) {
 
 const tabs = [
   { to: '/', label: 'Inicio', icon: 'home' },
-  { to: '/catalogo', label: 'Catálogo', icon: 'catalogo' },
-  { to: '/catalogo?enPromocion=true', label: 'Promos', icon: 'promos', accent: true },
   { to: '/carrito', label: 'Carrito', icon: 'carrito', badge: true },
   { to: '/mi-cuenta', label: 'Mi cuenta', icon: 'cuenta' },
 ];
 
 function isTabActive(tab, location) {
-  const [tabPath, tabQuery] = tab.to.split('?');
-  if (location.pathname !== tabPath) return false;
-  const enPromocion = new URLSearchParams(location.search).get('enPromocion') === 'true';
-  const tabIsPromos = tabQuery?.includes('enPromocion=true');
-  return tabIsPromos ? enPromocion : !enPromocion;
+  if (tab.label === 'Inicio') {
+    return location.pathname === '/' && !location.hash;
+  }
+  return location.pathname === tab.to;
 }
 
 export default function BottomTabBar() {
@@ -65,7 +54,7 @@ export default function BottomTabBar() {
 
   return (
     <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-sol-negro border-t border-sol-blanco/10 pb-[env(safe-area-inset-bottom)]">
-      <div className="grid grid-cols-5">
+      <div className="grid grid-cols-3">
         {tabs.map((tab) => {
           const isActive = isTabActive(tab, location);
           return (
