@@ -39,6 +39,19 @@ export default function Carrito() {
       return;
     }
 
+    const sinPrecio = items.find((i) => !i.precio || i.precio <= 0);
+    if (sinPrecio) {
+      Swal.fire({
+        icon: 'info',
+        title: 'Un producto todavía no tiene precio',
+        text: `"${sinPrecio.nombre}" todavía no tiene un precio cargado. Sacalo del carrito o consultanos por WhatsApp para coordinar la compra.`,
+        background: '#0D0D0D',
+        color: '#FFFFFF',
+        confirmButtonColor: '#F5C518',
+      });
+      return;
+    }
+
     if (!telefono.trim() || telefono.replace(/\D/g, '').length < 6) {
       setTelefonoError('Ingresá un teléfono válido para que podamos contactarte por el envío');
       return;

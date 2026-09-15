@@ -1,6 +1,5 @@
 const Product = require('../models/Product');
 const Order = require('../models/Order');
-const User = require('../models/User');
 const { reservarStock, liberarStock } = require('../utils/stockService');
 const {
   mpDisponible,
@@ -8,13 +7,11 @@ const {
   obtenerPago,
   buscarPagoPorPedido,
 } = require('../utils/mercadopago');
-const { enviarNotificacionPedido, enviarNotificacionNuevoPedido } = require('../utils/mailer');
 
 const ESTADOS_VALIDOS = ['pagado', 'en_preparacion', 'listo', 'entregado', 'cancelado'];
 
 // Compartido entre el webhook y la sincronización activa (getOrder): aplica el estado
-// de un pago de Mercado Pago al pedido correspondiente. El mail al admin se dispara acá
-// (recién cuando el pago está confirmado), no al crear el pedido.
+// de un pago de Mercado Pago al pedido correspondiente.
 async function aplicarEstadoPago(order, payment) {
   order.mercadopago.paymentId = String(payment.id);
 
@@ -26,11 +23,6 @@ async function aplicarEstadoPago(order, payment) {
   }
 
   await order.save();
-
-  if (order.estado === 'pagado') {
-    const user = await User.findById(order.cliente);
-    enviarNotificacionNuevoPedido(order, user).catch(() => {});
-  }
 }
 
 async function createOrder(req, res, next) {
@@ -65,6 +57,12 @@ async function createOrder(req, res, next) {
         product.precioDescuento && product.precioDescuento < product.precio
           ? product.precioDescuento
           : product.precio;
+
+      if (!precio || precio <= 0) {
+        return res.status(400).json({
+          message: `"${product.nombre}" todavía no tiene un precio cargado. Sacalo del carrito o consultanos por WhatsApp para coordinar la compra.`,
+        });
+      }
 
       orderItems.push({
         producto: product._id,
@@ -188,11 +186,6 @@ async function simulatePayment(req, res, next) {
     }
 
     await order.save();
-
-    if (order.estado === 'pagado') {
-      const user = await User.findById(order.cliente);
-      enviarNotificacionNuevoPedido(order, user).catch(() => {});
-    }
 
     res.json(order);
   } catch (err) {
@@ -338,9 +331,6 @@ async function adminUpdateOrderStatus(req, res, next) {
 
     order.estado = estado;
     await order.save();
-
-    const user = await User.findById(order.cliente);
-    enviarNotificacionPedido(order, user).catch(() => {});
 
     res.json(order);
   } catch (err) {
