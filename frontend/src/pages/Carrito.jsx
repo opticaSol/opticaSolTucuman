@@ -7,6 +7,7 @@ import { useUserStore } from '../store/useUserStore';
 import CartItem from '../components/carrito/CartItem';
 import { formatPrice } from '../lib/formatters';
 import { createOrder } from '../lib/api';
+import { TELEFONO_REGEX } from '../lib/validation';
 import PageTransition from '../components/ui/PageTransition';
 
 export default function Carrito() {
@@ -52,8 +53,13 @@ export default function Carrito() {
       return;
     }
 
-    if (!telefono.trim() || telefono.replace(/\D/g, '').length < 6) {
+    const telefonoTrim = telefono.trim();
+    if (!telefonoTrim || telefonoTrim.replace(/\D/g, '').length < 6) {
       setTelefonoError('Ingresá un teléfono válido para que podamos contactarte por el envío');
+      return;
+    }
+    if (telefonoTrim.length > 20 || !TELEFONO_REGEX.test(telefonoTrim)) {
+      setTelefonoError('El teléfono solo puede tener números (podés usar +, - o espacios)');
       return;
     }
     setTelefonoError('');
