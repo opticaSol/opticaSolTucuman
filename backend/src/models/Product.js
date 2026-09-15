@@ -35,13 +35,11 @@ const productSchema = new mongoose.Schema(
     stock: { type: Number, required: true, min: 0, default: 0 },
     umbralStockBajo: { type: Number, min: 0, default: 5 },
 
-    imagenes: {
-      type: [String],
-      validate: {
-        validator: (arr) => Array.isArray(arr) && arr.length >= 1,
-        message: 'El producto necesita al menos una imagen',
-      },
-    },
+    // La validación de "al menos una imagen o video" se hace en el
+    // controller (bulkCreateProducts crea borradores solo-imagen o
+    // solo-video a propósito, uno por cada archivo cargado).
+    imagenes: { type: [String], default: [] },
+    videos: { type: [String], default: [] },
 
     descripcion: { type: String, default: '' },
     materiales: { type: String, default: '' },

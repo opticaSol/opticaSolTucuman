@@ -5,12 +5,16 @@ import Badge from '../ui/Badge';
 import PriceTag from '../ui/PriceTag';
 import { useCartStore } from '../../store/useCartStore';
 import { STORE_WHATSAPP_URL } from '../../lib/whatsapp';
+import { CATEGORIA_LABEL } from '../../lib/formatters';
+import { getThumbnail } from '../../lib/media';
 
 export default function ProductCard({ product, className = '' }) {
   const addItem = useCartStore((s) => s.addItem);
   // Carga masiva sin completar todavía: mientras tenga el nombre de relleno,
-  // no hay ficha real que mostrar.
+  // no hay ficha real que mostrar. Usamos la categoría como título provisorio.
   const esBorrador = product.nombre === 'Producto sin nombre';
+  const nombreMostrado = esBorrador ? CATEGORIA_LABEL[product.categoria] : product.nombre;
+  const thumbnail = getThumbnail(product);
 
   function handleAddToCart(e) {
     e.preventDefault();
@@ -21,7 +25,7 @@ export default function ProductCard({ product, className = '' }) {
       position: 'top-end',
       icon: 'success',
       title: 'Agregado al carrito',
-      text: product.nombre,
+      text: nombreMostrado,
       showConfirmButton: false,
       timer: 1800,
       background: '#0D0D0D',
@@ -39,12 +43,21 @@ export default function ProductCard({ product, className = '' }) {
     >
       <Link to={`/producto/${product._id}`} className="flex flex-col flex-1">
         <div className="relative aspect-square bg-sol-blanco overflow-hidden">
-          <img
-            src={product.imagenes?.[0]}
-            alt={product.nombre}
-            loading="lazy"
-            className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
-          />
+          {thumbnail?.isVideo ? (
+            <video
+              src={thumbnail.url}
+              muted
+              playsInline
+              className="w-full h-full object-contain bg-sol-blanco group-hover:scale-105 transition-transform duration-300"
+            />
+          ) : (
+            <img
+              src={thumbnail?.url}
+              alt={nombreMostrado}
+              loading="lazy"
+              className="w-full h-full object-contain bg-sol-blanco group-hover:scale-105 transition-transform duration-300"
+            />
+          )}
           {!esBorrador && (
             <div className="absolute top-2 left-2 flex flex-col gap-1.5">
               {product.badges?.map((b) => (
@@ -54,51 +67,44 @@ export default function ProductCard({ product, className = '' }) {
           )}
         </div>
 
-        {/* Se reserva siempre este bloque (con o sin contenido) para que todas las
-            tarjetas midan lo mismo, tengan o no ficha completa todavía. */}
-        <div className="p-4 flex flex-col gap-1 flex-1 min-h-[104px]">
-          {!esBorrador && (
-            <>
-              <span className="text-xs uppercase tracking-wide text-sol-blanco/50">
-                {product.marca}
-              </span>
-              <h3 className="font-display font-bold leading-tight line-clamp-2">{product.nombre}</h3>
-              <div className="mt-auto pt-2">
-                <PriceTag precio={product.precio} precioDescuento={product.precioDescuento} />
-              </div>
-            </>
+        {/* Se reserva siempre este bloque para que todas las tarjetas midan lo
+            mismo, tengan o no ficha completa todavía. */}
+        <div
+          className={`p-4 flex flex-col gap-1 flex-1 min-h-[104px] ${
+            esBorrador ? 'text-sol-negro' : ''
+          }`}
+        >
+          {!esBorrador && product.marca !== 'Sin marca' && (
+            <span className="text-xs uppercase tracking-wide text-sol-blanco/50">
+              {product.marca}
+            </span>
           )}
+          <h3 className="font-display font-bold leading-tight line-clamp-2">{nombreMostrado}</h3>
+          <div className="mt-auto pt-2">
+            <PriceTag precio={product.precio} precioDescuento={product.precioDescuento} />
+          </div>
         </div>
       </Link>
 
-      {esBorrador ? (
-        <div className="m-4 mt-0 grid grid-cols-2 gap-2">
-          <button
-            disabled
-            className="rounded-full font-display font-bold py-2 text-sm bg-sol-negro/10 text-sol-negro/40 cursor-not-allowed"
-          >
-            Precio a confirmar
-          </button>
-          <a
-            href={STORE_WHATSAPP_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={(e) => e.stopPropagation()}
-            className="rounded-full font-display font-bold py-2 text-sm text-center bg-sol-amarillo text-sol-negro hover:brightness-95 transition-colors"
-          >
-            WhatsApp
-          </a>
-        </div>
-      ) : (
+      <div className="m-4 mt-0 grid grid-cols-2 gap-2">
         <motion.button
           onClick={handleAddToCart}
           whileHover={{ scale: 1.03 }}
           whileTap={{ scale: 0.95 }}
-          className="m-4 mt-0 rounded-full font-display font-bold py-2 text-sm transition-colors bg-sol-amarillo text-sol-negro hover:brightness-95"
+          className="rounded-full font-display font-bold py-2 text-sm transition-colors bg-sol-amarillo text-sol-negro hover:brightness-95"
         >
-          Agregar al carrito
+          Agregar
         </motion.button>
-      )}
+        <a
+          href={STORE_WHATSAPP_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={(e) => e.stopPropagation()}
+          className="rounded-full font-display font-bold py-2 text-sm text-center bg-sol-rojo text-sol-blanco hover:brightness-95 transition-colors"
+        >
+          WhatsApp
+        </a>
+      </div>
     </motion.div>
   );
 }
