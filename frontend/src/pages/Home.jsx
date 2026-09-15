@@ -22,11 +22,22 @@ export default function Home() {
   useEffect(() => {
     if (!location.hash) return;
     const el = document.querySelector(location.hash);
-    if (el) {
-      // Esperar al próximo frame: el contenido de arriba (hero, promos) puede
-      // seguir cargando/animando y correr la posición del elemento.
-      requestAnimationFrame(() => el.scrollIntoView({ behavior: 'smooth' }));
-    }
+    if (!el) return;
+
+    // Esperar al próximo frame: el contenido de arriba (hero, promos) puede
+    // seguir cargando/animando y correr la posición del elemento.
+    requestAnimationFrame(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+
+    // Las secciones tienen una animación de entrada (fade + slide-up) que se
+    // dispara justo cuando quedan a la vista: si arranca a mitad del scroll,
+    // termina de correr la posición unos px y la sección no queda alineada
+    // arriba del todo. Repetimos el scroll (sin animación) cuando esa
+    // animación ya terminó, para corregir el resultado final.
+    const fix = setTimeout(() => {
+      el.scrollIntoView({ behavior: 'auto', block: 'start' });
+    }, 700);
+
+    return () => clearTimeout(fix);
   }, [location.hash, location.search]);
 
   return (
