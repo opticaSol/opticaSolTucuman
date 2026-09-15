@@ -9,8 +9,17 @@ import {
   fetchFilterOptions,
 } from '../../lib/api';
 import { formatPrice, CATEGORIA_LABEL } from '../../lib/formatters';
+import { getThumbnail } from '../../lib/media';
 import Pagination from '../../components/ui/Pagination';
 import FiltrosChips from '../../components/catalogo/FiltrosChips';
+
+function Thumb({ product, className }) {
+  const thumbnail = getThumbnail(product);
+  if (thumbnail?.isVideo) {
+    return <video src={thumbnail.url} muted className={className} />;
+  }
+  return <img src={thumbnail?.url} alt="" className={className} />;
+}
 
 const LIMIT = 10;
 
@@ -115,12 +124,18 @@ export default function Productos() {
     setBulkUploading(true);
     try {
       const imagenes = [];
+      const videos = [];
       for (const file of files) {
-        const { url } = await uploadImage(file, 'productos');
-        imagenes.push(url);
+        const { url, tipo } = await uploadImage(file, 'productos');
+        if (tipo === 'video') videos.push(url);
+        else imagenes.push(url);
       }
 
-      const { creados } = await bulkCreateProducts({ categoria: filters.categoria || 'sol', imagenes });
+      const { creados } = await bulkCreateProducts({
+        categoria: filters.categoria || 'sol',
+        imagenes,
+        videos,
+      });
 
       Swal.fire({
         icon: 'success',
@@ -153,11 +168,11 @@ export default function Productos() {
         <h1 className="font-display font-black text-2xl uppercase">Productos</h1>
         <div className="flex flex-wrap items-center gap-2">
           <label className="inline-flex items-center gap-2 rounded-full border border-dashed border-sol-blanco/30 px-4 py-2 text-sm cursor-pointer hover:border-sol-amarillo">
-            {bulkUploading ? 'Subiendo...' : 'Carga masiva de fotos'}
+            {bulkUploading ? 'Subiendo...' : 'Carga masiva de fotos y videos'}
             <input
               ref={bulkInputRef}
               type="file"
-              accept="image/*"
+              accept="image/*,video/*"
               multiple
               onChange={handleBulkUpload}
               disabled={bulkUploading}
@@ -173,7 +188,7 @@ export default function Productos() {
         </div>
       </div>
       <p className="text-xs text-sol-blanco/50 -mt-4">
-        La carga masiva crea un producto por foto en la categoría que tengas filtrada abajo (o
+        La carga masiva crea un producto por foto o video en la categoría que tengas filtrada abajo (o
         "Anteojos de Sol" si no filtraste ninguna), activo de una (visible en el catálogo) con
         datos de relleno. Completá nombre, marca, precio y stock de cada uno apenas puedas.
       </p>
@@ -204,11 +219,7 @@ export default function Productos() {
           <div className="flex flex-col gap-3 md:hidden">
             {products.map((p) => (
               <div key={p._id} className="rounded-xl2 border border-sol-blanco/10 p-4 flex gap-3">
-                <img
-                  src={p.imagenes?.[0]}
-                  alt=""
-                  className="w-16 h-16 rounded-lg object-cover bg-sol-blanco/5 shrink-0"
-                />
+                <Thumb product={p} className="w-16 h-16 rounded-lg object-cover bg-sol-blanco/5 shrink-0" />
                 <div className="flex-1 min-w-0 flex flex-col gap-1.5">
                   <p className="font-display font-bold leading-tight">{p.nombre}</p>
                   <p className="text-xs text-sol-blanco/50">{CATEGORIA_LABEL[p.categoria]}</p>
@@ -261,7 +272,7 @@ export default function Productos() {
                 {products.map((p) => (
                   <tr key={p._id} className="border-t border-sol-blanco/10">
                     <td className="px-4 py-3 flex items-center gap-3">
-                      <img src={p.imagenes?.[0]} alt="" className="w-10 h-10 rounded object-cover bg-sol-blanco/5" />
+                      <Thumb product={p} className="w-10 h-10 rounded object-cover bg-sol-blanco/5" />
                       {p.nombre}
                     </td>
                     <td className="px-4 py-3 text-sol-blanco/70">{CATEGORIA_LABEL[p.categoria]}</td>

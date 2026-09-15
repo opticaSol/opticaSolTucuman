@@ -21,6 +21,7 @@ export const productSchema = z
     stock: z.coerce.number().int().min(0, 'El stock debe ser mayor o igual a 0'),
     umbralStockBajo: z.coerce.number().int().min(0).default(5),
     imagenes: z.array(z.string().url()).min(1, 'Necesitás al menos una imagen'),
+    videos: z.array(z.string().url()).optional().default([]),
     descripcion: z.string().optional(),
     materiales: z.string().optional(),
     proteccionUV: z.boolean().optional(),
