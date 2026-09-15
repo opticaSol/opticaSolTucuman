@@ -263,6 +263,8 @@ const CATEGORIAS_VALIDAS = ['sol', 'contacto', 'recetados', 'armazones', 'liquid
 // fotos o videos juntos. Quedan activos (visibles en el catálogo) de una.
 async function bulkCreateProducts(req, res, next) {
   try {
+    if (!handleValidation(req, res)) return;
+
     const { imagenes = [], videos = [], categoria = 'sol' } = req.body;
 
     const archivos = [
