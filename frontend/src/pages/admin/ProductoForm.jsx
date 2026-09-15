@@ -39,6 +39,7 @@ const emptyValues = {
   irrompible: false,
   colorArmazon: '',
   activo: true,
+  destacado: false,
 };
 
 export default function ProductoForm() {
@@ -223,6 +224,11 @@ export default function ProductoForm() {
         <label className="flex items-center gap-2 text-sm">
           <input type="checkbox" {...register('activo')} />
           Producto activo (visible en el catálogo)
+        </label>
+
+        <label className="flex items-center gap-2 text-sm">
+          <input type="checkbox" {...register('destacado')} />
+          Destacado (aparece primero, en la sección de Destacados de la home)
         </label>
 
         <Field label="Imágenes" error={errors.imagenes?.message}>

@@ -93,7 +93,9 @@ export default function ProductoDetalle() {
 
           <h1 className="font-display font-black text-2xl md:text-3xl">{nombreMostrado}</h1>
 
-          <PriceTag precio={product.precio} precioDescuento={product.precioDescuento} size="lg" />
+          {product.precio > 0 && (
+            <PriceTag precio={product.precio} precioDescuento={product.precioDescuento} size="lg" />
+          )}
 
           {product.descripcion && <p className="text-sol-blanco/80 leading-relaxed">{product.descripcion}</p>}
 
