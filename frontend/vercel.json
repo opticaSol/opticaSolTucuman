@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://optica-sol-tucuman-3pf7.vercel.app/api/:path*"
+    }
+  ]
+}
