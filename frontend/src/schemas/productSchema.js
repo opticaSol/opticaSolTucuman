@@ -28,6 +28,7 @@ export const productSchema = z
     irrompible: z.boolean().optional(),
     colorArmazon: z.string().optional(),
     activo: z.boolean().optional(),
+    destacado: z.boolean().optional(),
   })
   .superRefine((data, ctx) => {
     if (data.categoria === 'recetados' && !data.tipoLenteRecetado) {
