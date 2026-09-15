@@ -6,7 +6,7 @@ import { useUserStore } from '../../store/useUserStore';
 const LOGO_URL =
   'https://res.cloudinary.com/dabikk5ei/image/upload/v1787667390/logo_ongamj.png';
 
-const links = [
+export const NAV_LINKS = [
   { hash: 'promos', label: 'Promos' },
   { hash: 'catalogo', label: 'Catálogo' },
   { hash: 'servicios', label: 'Servicios' },
@@ -16,7 +16,7 @@ const links = [
   { hash: 'ubicacion', label: 'Ubicación' },
 ];
 
-function isLinkActive(link, location) {
+export function isLinkActive(link, location) {
   return location.pathname === '/' && location.hash === `#${link.hash}`;
 }
 
@@ -39,7 +39,7 @@ export default function Navbar() {
         </Link>
 
         <nav className="flex items-center gap-5 overflow-x-auto scrollbar-none font-display font-bold uppercase text-xs tracking-wide mx-4">
-          {links.map((link) => (
+          {NAV_LINKS.map((link) => (
             <Link
               key={link.hash}
               to={`/#${link.hash}`}
