@@ -32,6 +32,7 @@ const emptyValues = {
   stock: 0,
   umbralStockBajo: 5,
   imagenes: [],
+  videos: [],
   descripcion: '',
   materiales: '',
   proteccionUV: false,
@@ -67,6 +68,7 @@ export default function ProductoForm() {
         tipoContacto: product.tipoContacto || '',
         tipoLenteRecetado: product.tipoLenteRecetado || '',
         precioDescuento: product.precioDescuento ?? '',
+        videos: product.videos || [],
       });
       setLoading(false);
     });
@@ -224,11 +226,34 @@ export default function ProductoForm() {
         </label>
 
         <Field label="Imágenes" error={errors.imagenes?.message}>
+          <p className="text-xs text-sol-blanco/40 mb-2">
+            La primera imagen (o la que marques con ★) es la que se muestra como portada.
+          </p>
           <Controller
             name="imagenes"
             control={control}
             render={({ field }) => (
-              <ImageUploader images={field.value} onChange={field.onChange} tipo="productos" />
+              <ImageUploader
+                images={field.value}
+                onChange={field.onChange}
+                tipo="productos"
+                allowPrincipal
+              />
+            )}
+          />
+        </Field>
+
+        <Field label="Videos (opcional)">
+          <Controller
+            name="videos"
+            control={control}
+            render={({ field }) => (
+              <ImageUploader
+                images={field.value}
+                onChange={field.onChange}
+                tipo="productos"
+                kind="video"
+              />
             )}
           />
         </Field>
