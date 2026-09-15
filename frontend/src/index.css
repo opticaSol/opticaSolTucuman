@@ -31,6 +31,18 @@ option {
   scrollbar-width: none;
 }
 
+/* Los inputs de contraseña ya tienen su propio botón de mostrar/ocultar
+   (PasswordInput.jsx): sacamos el que agregan los navegadores por defecto
+   (el "ojo" de Edge y el ícono de revelar de Chrome) para que no se dupliquen. */
+input[type='password']::-ms-reveal,
+input[type='password']::-ms-clear {
+  display: none;
+}
+input::-webkit-credentials-auto-fill-button,
+input::-webkit-strong-password-auto-fill-button {
+  display: none !important;
+}
+
 @layer components {
   .input {
     @apply w-full rounded-xl bg-sol-blanco/5 border border-sol-blanco/20 px-4 py-2.5 text-sm text-sol-blanco focus:outline-none focus:border-sol-amarillo;
