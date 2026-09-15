@@ -1,5 +1,4 @@
 const Product = require('../models/Product');
-const { enviarAlertaStockBajo } = require('./mailer');
 
 async function liberarStock(items) {
   for (const item of items) {
@@ -27,12 +26,6 @@ async function reservarStock(items) {
     }
 
     reservados.push(item);
-
-    const nuevoStock = before.stock - item.cantidad;
-    const cruzoUmbral = before.stock > before.umbralStockBajo && nuevoStock <= before.umbralStockBajo;
-    if (cruzoUmbral) {
-      enviarAlertaStockBajo({ ...before.toObject(), stock: nuevoStock }).catch(() => {});
-    }
   }
 
   return reservados;
