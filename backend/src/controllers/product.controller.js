@@ -18,6 +18,15 @@ function validateCategoryFields(body) {
   return null;
 }
 
+function validateMedia(body) {
+  const imagenes = body.imagenes?.length || 0;
+  const videos = body.videos?.length || 0;
+  if (imagenes + videos === 0) {
+    return 'El producto necesita al menos una imagen o video';
+  }
+  return null;
+}
+
 async function listProducts(req, res, next) {
   try {
     const {
@@ -88,7 +97,6 @@ async function getProductById(req, res, next) {
     const product = await Product.findOne({
       _id: req.params.id,
       activo: true,
-      nombre: { $ne: 'Producto sin nombre' },
     });
     if (!product) {
       return res.status(404).json({ message: 'Producto no encontrado' });
@@ -211,6 +219,9 @@ async function createProduct(req, res, next) {
     const categoryError = validateCategoryFields(req.body);
     if (categoryError) return res.status(400).json({ message: categoryError });
 
+    const mediaError = validateMedia(req.body);
+    if (mediaError) return res.status(400).json({ message: mediaError });
+
     const product = await Product.create(req.body);
     res.status(201).json(serializeProduct(product));
   } catch (err) {
@@ -224,6 +235,9 @@ async function updateProduct(req, res, next) {
 
     const categoryError = validateCategoryFields(req.body);
     if (categoryError) return res.status(400).json({ message: categoryError });
+
+    const mediaError = validateMedia(req.body);
+    if (mediaError) return res.status(400).json({ message: mediaError });
 
     const product = await Product.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
@@ -242,28 +256,34 @@ async function updateProduct(req, res, next) {
 
 const CATEGORIAS_VALIDAS = ['sol', 'contacto', 'recetados', 'armazones', 'liquidos', 'colgantes'];
 
-// Crea un producto "borrador" por cada imagen (nombre/marca/precio de relleno)
-// para no tener que dar de alta uno por uno cuando se cargan muchas fotos
-// juntas. Quedan activos (visibles en el catálogo) de una.
+// Crea un producto "borrador" por cada archivo (nombre/marca/precio de
+// relleno) para no tener que dar de alta uno por uno cuando se cargan muchas
+// fotos o videos juntos. Quedan activos (visibles en el catálogo) de una.
 async function bulkCreateProducts(req, res, next) {
   try {
-    const { imagenes, categoria = 'sol' } = req.body;
+    const { imagenes = [], videos = [], categoria = 'sol' } = req.body;
 
-    if (!Array.isArray(imagenes) || imagenes.length === 0) {
-      return res.status(400).json({ message: 'Subí al menos una imagen' });
+    const archivos = [
+      ...(Array.isArray(imagenes) ? imagenes : []).map((url) => ({ url, tipo: 'imagen' })),
+      ...(Array.isArray(videos) ? videos : []).map((url) => ({ url, tipo: 'video' })),
+    ];
+
+    if (archivos.length === 0) {
+      return res.status(400).json({ message: 'Subí al menos una imagen o video' });
     }
     if (!CATEGORIAS_VALIDAS.includes(categoria)) {
       return res.status(400).json({ message: 'Categoría inválida' });
     }
 
     const productos = await Product.insertMany(
-      imagenes.map((url) => ({
+      archivos.map(({ url, tipo }) => ({
         nombre: 'Producto sin nombre',
         categoria,
         marca: 'Sin marca',
         precio: 0,
         stock: 0,
-        imagenes: [url],
+        imagenes: tipo === 'imagen' ? [url] : [],
+        videos: tipo === 'video' ? [url] : [],
         activo: true,
       }))
     );
