@@ -12,16 +12,16 @@ export const useCartStore = create(
     (set, get) => ({
       items: [],
 
+      // Se puede comprar aunque no haya stock (se pide al proveedor), así que la
+      // cantidad en el carrito ya no se limita al stock disponible.
       addItem: (product, qty = 1) => {
         const items = get().items;
         const existing = items.find((i) => i._id === product._id);
-        const stock = product.stock ?? Infinity;
 
         if (existing) {
-          const nextQty = Math.min(existing.qty + qty, stock);
           set({
             items: items.map((i) =>
-              i._id === product._id ? { ...i, qty: nextQty } : i
+              i._id === product._id ? { ...i, qty: i.qty + qty } : i
             ),
           });
         } else {
@@ -33,8 +33,8 @@ export const useCartStore = create(
                 nombre: product.nombre,
                 imagen: product.imagenes?.[0],
                 precio: priceOf(product),
-                stock,
-                qty: Math.min(qty, stock),
+                stock: product.stock,
+                qty,
               },
             ],
           });
@@ -48,7 +48,7 @@ export const useCartStore = create(
       updateQty: (id, qty) => {
         set({
           items: get().items.map((i) =>
-            i._id === id ? { ...i, qty: Math.max(1, Math.min(qty, i.stock)) } : i
+            i._id === id ? { ...i, qty: Math.max(1, qty) } : i
           ),
         });
       },

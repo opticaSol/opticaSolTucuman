@@ -73,7 +73,7 @@ export default function Carrito() {
         <p className="text-sol-blanco/60 mb-6">Descubrí nuestras promos y armá tu pedido.</p>
         <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="inline-block">
           <Link
-            to="/catalogo"
+            to="/#catalogo"
             className="inline-block rounded-full bg-sol-amarillo text-sol-negro font-display font-bold px-6 py-3"
           >
             Ir al catálogo

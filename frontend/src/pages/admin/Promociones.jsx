@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { fetchAdminPromotions, deletePromotion } from '../../lib/api';
+import { formatDescuento } from '../../lib/formatters';
 import Pagination from '../../components/ui/Pagination';
 
 const LIMIT = 6;
@@ -96,7 +97,7 @@ export default function Promociones() {
                   </span>
                   <p className="font-display font-bold">{promo.titulo}</p>
                   <p className="text-xs text-sol-blanco/60">
-                    {promo.tipoDescuento === 'porcentaje' ? `${promo.valor}% OFF` : `$${promo.valor} OFF`}
+                    {formatDescuento(promo)}
                   </p>
                   <div className="mt-auto flex gap-4 pt-2">
                     <Link

@@ -100,6 +100,11 @@ export async function deleteProduct(id) {
   return data;
 }
 
+export async function bulkCreateProducts(payload) {
+  const { data } = await api.post('/admin/products/bulk', payload);
+  return data;
+}
+
 export async function fetchAdminPromotions(params = {}) {
   const { data } = await api.get('/admin/promotions', { params });
   return data;

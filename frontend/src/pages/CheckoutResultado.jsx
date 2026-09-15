@@ -173,7 +173,7 @@ export default function CheckoutResultado() {
       </AnimatePresence>
 
       <Link
-        to="/catalogo"
+        to="/#catalogo"
         className="inline-block text-sm font-display font-bold text-sol-amarillo underline underline-offset-4"
       >
         Seguir comprando

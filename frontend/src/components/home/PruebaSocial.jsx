@@ -11,7 +11,7 @@ const STATS = [
 
 export default function PruebaSocial() {
   return (
-    <FadeInSection className="bg-sol-negro py-14 px-6">
+    <FadeInSection id="presupuesto-envios" className="bg-sol-negro py-14 px-6 scroll-mt-16">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-wrap justify-center gap-10 mb-10">
           {STATS.map((s) => (

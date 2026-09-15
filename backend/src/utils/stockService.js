@@ -11,16 +11,17 @@ async function reservarStock(items) {
   const reservados = [];
 
   for (const item of items) {
-    // Atómico: solo descuenta si hay stock suficiente en ese momento (evita condiciones de carrera).
+    // Se permite comprar aunque no haya stock (pedido especial al proveedor), así que
+    // esto ya no bloquea la compra: solo descuenta, incluso si el stock queda en 0 o negativo.
     const before = await Product.findOneAndUpdate(
-      { _id: item.producto, stock: { $gte: item.cantidad } },
+      { _id: item.producto },
       { $inc: { stock: -item.cantidad } },
       { new: false }
     );
 
     if (!before) {
       await liberarStock(reservados);
-      const err = new Error(`Sin stock suficiente para "${item.nombre}"`);
+      const err = new Error(`El producto "${item.nombre}" ya no existe`);
       err.status = 409;
       throw err;
     }

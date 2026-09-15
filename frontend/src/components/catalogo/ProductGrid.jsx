@@ -1,6 +1,6 @@
 import ProductCard from './ProductCard';
 
-export default function ProductGrid({ products, loading, onQuickView }) {
+export default function ProductGrid({ products, loading }) {
   if (loading) {
     return (
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -22,7 +22,7 @@ export default function ProductGrid({ products, loading, onQuickView }) {
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
       {products.map((product) => (
-        <ProductCard key={product._id} product={product} onQuickView={onQuickView} />
+        <ProductCard key={product._id} product={product} />
       ))}
     </div>
   );

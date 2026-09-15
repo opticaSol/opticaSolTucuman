@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { CATEGORIA_LABEL, GENERO_LABEL, TIPO_CONTACTO_LABEL } from '../../lib/formatters';
+import { CATEGORIA_LABEL, GENERO_LABEL, TIPO_LENTE_RECETADO_LABEL } from '../../lib/formatters';
 
 function Chip({ active, onClick, children, accent }) {
   return (
@@ -20,10 +20,13 @@ function Chip({ active, onClick, children, accent }) {
   );
 }
 
-export default function FiltrosChips({ filters, onToggle, onChange, filterOptions }) {
+const FILTER_KEYS = ['categoria', 'genero', 'tipoLenteRecetado', 'marca', 'colorArmazon', 'precioMin', 'precioMax', 'enPromocion', 'irrompible', 'q'];
+
+export default function FiltrosChips({ filters, onToggle, onChange, onReset, filterOptions }) {
   const generos = Object.entries(GENERO_LABEL);
   const categorias = Object.entries(CATEGORIA_LABEL);
-  const tipos = Object.entries(TIPO_CONTACTO_LABEL);
+  const tiposLenteRecetado = Object.entries(TIPO_LENTE_RECETADO_LABEL);
+  const hayFiltrosActivos = FILTER_KEYS.some((key) => filters[key]);
 
   return (
     <div className="flex flex-col gap-3">
@@ -36,9 +39,20 @@ export default function FiltrosChips({ filters, onToggle, onChange, filterOption
         <Chip active={filters.enPromocion} onClick={() => onChange('enPromocion', !filters.enPromocion)} accent>
           En promoción
         </Chip>
+        <Chip active={filters.irrompible} onClick={() => onChange('irrompible', !filters.irrompible)}>
+          Armazones para niños irrompibles
+        </Chip>
+        {hayFiltrosActivos && onReset && (
+          <button
+            onClick={onReset}
+            className="whitespace-nowrap rounded-full px-4 py-2 text-sm font-display font-bold text-sol-blanco/60 hover:text-sol-rojo transition-colors"
+          >
+            ✕ Limpiar filtros
+          </button>
+        )}
       </div>
 
-      {filters.categoria !== 'contacto' && (
+      {['sol', 'armazones'].includes(filters.categoria) && (
         <div className="flex gap-2 overflow-x-auto scrollbar-none pb-1">
           {generos.map(([value, label]) => (
             <Chip key={value} active={filters.genero === value} onClick={() => onToggle('genero', value)}>
@@ -48,13 +62,13 @@ export default function FiltrosChips({ filters, onToggle, onChange, filterOption
         </div>
       )}
 
-      {filters.categoria === 'contacto' && (
+      {filters.categoria === 'recetados' && (
         <div className="flex gap-2 overflow-x-auto scrollbar-none pb-1">
-          {tipos.map(([value, label]) => (
+          {tiposLenteRecetado.map(([value, label]) => (
             <Chip
               key={value}
-              active={filters.tipoContacto === value}
-              onClick={() => onToggle('tipoContacto', value)}
+              active={filters.tipoLenteRecetado === value}
+              onClick={() => onToggle('tipoLenteRecetado', value)}
             >
               {label}
             </Chip>
@@ -73,20 +87,6 @@ export default function FiltrosChips({ filters, onToggle, onChange, filterOption
       )}
 
       <div className="flex flex-wrap items-center gap-3">
-        <input
-          type="number"
-          placeholder="Precio min"
-          value={filters.precioMin}
-          onChange={(e) => onChange('precioMin', e.target.value)}
-          className="w-28 rounded-full bg-sol-blanco/5 border border-sol-blanco/20 px-3 py-1.5 text-sm focus:outline-none focus:border-sol-amarillo"
-        />
-        <input
-          type="number"
-          placeholder="Precio max"
-          value={filters.precioMax}
-          onChange={(e) => onChange('precioMax', e.target.value)}
-          className="w-28 rounded-full bg-sol-blanco/5 border border-sol-blanco/20 px-3 py-1.5 text-sm focus:outline-none focus:border-sol-amarillo"
-        />
         {filterOptions?.coloresArmazon?.length > 0 && (
           <select
             value={filters.colorArmazon}

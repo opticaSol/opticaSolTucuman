@@ -14,10 +14,10 @@ function calcularBadges(product) {
     badges.push('Más vendido');
   }
 
-  if (product.stock === 0) {
-    badges.push('Agotado');
-  } else if (product.stock <= product.umbralStockBajo) {
-    badges.push(`Últimas unidades`);
+  // Se puede comprar aunque no haya stock (se pide al proveedor), así que no hay
+  // badge de "Agotado": solo se avisa cuando quedan pocas unidades en stock real.
+  if (product.stock > 0 && product.stock <= product.umbralStockBajo) {
+    badges.push('Últimas unidades');
   }
 
   if (product.precioDescuento && product.precioDescuento < product.precio) {

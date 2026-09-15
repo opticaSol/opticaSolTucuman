@@ -6,7 +6,7 @@ export default function CrossSell({ products }) {
   return (
     <section className="mt-12">
       <h2 className="font-display font-extrabold text-xl uppercase mb-4">
-        Comprado junto a...
+        Otros productos que pueden interesarte
       </h2>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {products.map((p) => (
