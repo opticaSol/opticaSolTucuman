@@ -40,6 +40,7 @@ async function listProducts(req, res, next) {
       precioMax,
       enPromocion,
       irrompible,
+      destacado,
       q,
       page = 1,
       limit = 12,
@@ -54,6 +55,7 @@ async function listProducts(req, res, next) {
     if (marca) filter.marca = marca;
     if (colorArmazon) filter.colorArmazon = colorArmazon;
     if (irrompible === 'true') filter.irrompible = true;
+    if (destacado === 'true') filter.destacado = true;
 
     if (precioMin || precioMax) {
       filter.precio = {};

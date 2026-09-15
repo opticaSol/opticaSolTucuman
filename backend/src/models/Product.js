@@ -49,6 +49,7 @@ const productSchema = new mongoose.Schema(
 
     ventasCount: { type: Number, default: 0 },
     activo: { type: Boolean, default: true },
+    destacado: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
