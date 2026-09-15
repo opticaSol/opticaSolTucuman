@@ -1,6 +1,16 @@
+const { validationResult } = require('express-validator');
 const Product = require('../models/Product');
 const Order = require('../models/Order');
 const { reservarStock, liberarStock } = require('../utils/stockService');
+
+function handleValidation(req, res) {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    res.status(400).json({ message: errors.array()[0].msg, errors: errors.array() });
+    return false;
+  }
+  return true;
+}
 const {
   mpDisponible,
   crearPreferencia,
@@ -27,6 +37,8 @@ async function aplicarEstadoPago(order, payment) {
 
 async function createOrder(req, res, next) {
   try {
+    if (!handleValidation(req, res)) return;
+
     if (req.user.rol === 'admin') {
       return res.status(403).json({ message: 'Las cuentas admin no pueden realizar compras' });
     }
@@ -273,6 +285,8 @@ async function adminListOrders(req, res, next) {
 
 async function adminUpdateOrder(req, res, next) {
   try {
+    if (!handleValidation(req, res)) return;
+
     const { telefonoContacto, direccionEntrega } = req.body;
 
     if (telefonoContacto !== undefined && String(telefonoContacto).trim().length < 6) {
@@ -314,6 +328,8 @@ async function adminDeleteOrder(req, res, next) {
 
 async function adminUpdateOrderStatus(req, res, next) {
   try {
+    if (!handleValidation(req, res)) return;
+
     const { estado } = req.body;
 
     if (!ESTADOS_VALIDOS.includes(estado)) {
