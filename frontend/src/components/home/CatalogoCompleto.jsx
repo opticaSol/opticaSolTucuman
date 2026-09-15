@@ -66,8 +66,10 @@ export default function CatalogoCompleto() {
   useEffect(() => {
     const categoria = searchParams.get('categoria');
     const enPromocion = searchParams.get('enPromocion');
+    const marca = searchParams.get('marca');
     if (categoria) setFilter('categoria', categoria);
     if (enPromocion) setFilter('enPromocion', true);
+    if (marca) setFilter('marca', marca);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 

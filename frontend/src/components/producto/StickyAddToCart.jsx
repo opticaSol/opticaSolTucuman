@@ -20,7 +20,9 @@ export default function StickyAddToCart({ product, visible, onAdd }) {
           <div className="max-w-5xl mx-auto flex items-center justify-between gap-4">
             <div className="min-w-0">
               <p className="truncate text-sm font-display font-bold">{nombreMostrado}</p>
-              <PriceTag precio={product.precio} precioDescuento={product.precioDescuento} />
+              {product.precio > 0 && (
+                <PriceTag precio={product.precio} precioDescuento={product.precioDescuento} />
+              )}
             </div>
             <div className="shrink-0 flex items-center gap-2">
               <a
