@@ -165,9 +165,13 @@ export default function CatalogoCompleto() {
                       </button>
                     </div>
                     <div className="relative">
-                      <div className="flex gap-4 overflow-x-auto scrollbar-none pb-2 -mx-6 px-6 md:mx-0 md:px-0">
+                      <div className="flex gap-4 overflow-x-auto overflow-y-hidden scrollbar-none pb-2 -mx-6 px-6 md:mx-0 md:px-0">
                         {items.map((p) => (
-                          <ProductCard key={p._id} product={p} className="w-[70%] sm:w-[280px] shrink-0" />
+                          <ProductCard
+                            key={p._id}
+                            product={p}
+                            className="w-[70%] sm:w-[280px] shrink-0 self-start"
+                          />
                         ))}
                       </div>
                       <div className="hidden md:block absolute right-0 top-0 bottom-2 w-16 bg-gradient-to-l from-sol-negro to-transparent pointer-events-none" />

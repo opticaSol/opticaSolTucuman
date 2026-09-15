@@ -25,25 +25,27 @@ function InfoRow({ icon, title, subtitle, action }) {
 
 export default function MapaHorarios() {
   return (
-    <FadeInSection id="ubicacion" className="relative bg-sol-negro py-20 px-6 overflow-hidden scroll-mt-16">
+    <FadeInSection id="ubicacion" className="relative bg-sol-negro py-20 px-6 scroll-mt-16">
       {/* Sunburst decorativo, eco del logo */}
-      <motion.div
-        aria-hidden
-        animate={{ rotate: 360 }}
-        transition={{ repeat: Infinity, duration: 50, ease: 'linear' }}
-        className="pointer-events-none absolute -right-40 -top-40 w-[560px] h-[560px] rounded-full opacity-[0.07]"
-        style={{
-          backgroundImage:
-            'repeating-conic-gradient(#F5C518 0deg 9deg, transparent 9deg 18deg)',
-        }}
-      />
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <motion.div
+          aria-hidden
+          animate={{ rotate: 360 }}
+          transition={{ repeat: Infinity, duration: 50, ease: 'linear' }}
+          className="absolute -right-40 -top-40 w-[560px] h-[560px] rounded-full opacity-[0.07]"
+          style={{
+            backgroundImage:
+              'repeating-conic-gradient(#F5C518 0deg 9deg, transparent 9deg 18deg)',
+          }}
+        />
+      </div>
 
       <div className="relative max-w-7xl mx-auto grid gap-14 md:grid-cols-2 items-center">
-        <div>
+        <div className="min-w-0">
           <p className="font-display font-bold text-sol-amarillo uppercase tracking-[0.2em] text-xs mb-3">
             ★ Encontranos en Tucumán
           </p>
-          <h2 className="font-display font-black text-4xl md:text-5xl uppercase mb-8 leading-[0.95]">
+          <h2 className="font-display font-black text-3xl sm:text-4xl md:text-5xl uppercase mb-8 leading-[0.95]">
             Visitanos
             <br />
             <span className="text-sol-rojo">cuando quieras</span>

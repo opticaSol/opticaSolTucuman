@@ -2,9 +2,8 @@ import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 
 const MENSAJES = [
-  '10% OFF pagando en efectivo o transferencia',
   '3 y 6 cuotas sin interés con todas las tarjetas',
-  'Lunes a Viernes 8 a 13 y 17 a 20:30 hs',
+  'Lunes a Sábados',
   '40 años cuidando tu vista en Tucumán',
 ];
 
