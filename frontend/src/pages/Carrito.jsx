@@ -7,6 +7,7 @@ import { useUserStore } from '../store/useUserStore';
 import CartItem from '../components/carrito/CartItem';
 import { formatPrice } from '../lib/formatters';
 import { createOrder } from '../lib/api';
+import { TELEFONO_REGEX } from '../lib/validation';
 import PageTransition from '../components/ui/PageTransition';
 
 export default function Carrito() {
@@ -39,8 +40,26 @@ export default function Carrito() {
       return;
     }
 
-    if (!telefono.trim() || telefono.replace(/\D/g, '').length < 6) {
+    const sinPrecio = items.find((i) => !i.precio || i.precio <= 0);
+    if (sinPrecio) {
+      Swal.fire({
+        icon: 'info',
+        title: 'Un producto todavía no tiene precio',
+        text: `"${sinPrecio.nombre}" todavía no tiene un precio cargado. Sacalo del carrito o consultanos por WhatsApp para coordinar la compra.`,
+        background: '#0D0D0D',
+        color: '#FFFFFF',
+        confirmButtonColor: '#F5C518',
+      });
+      return;
+    }
+
+    const telefonoTrim = telefono.trim();
+    if (!telefonoTrim || telefonoTrim.replace(/\D/g, '').length < 6) {
       setTelefonoError('Ingresá un teléfono válido para que podamos contactarte por el envío');
+      return;
+    }
+    if (telefonoTrim.length > 20 || !TELEFONO_REGEX.test(telefonoTrim)) {
+      setTelefonoError('El teléfono solo puede tener números (podés usar +, - o espacios)');
       return;
     }
     setTelefonoError('');

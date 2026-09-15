@@ -2,6 +2,15 @@ const { validationResult } = require('express-validator');
 const cloudinary = require('../config/cloudinary');
 const Receta = require('../models/Receta');
 
+function handleValidation(req, res) {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    res.status(400).json({ message: errors.array()[0].msg, errors: errors.array() });
+    return false;
+  }
+  return true;
+}
+
 function streamUpload(buffer, folder) {
   return new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
@@ -17,10 +26,7 @@ function streamUpload(buffer, folder) {
 
 async function createReceta(req, res, next) {
   try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ message: errors.array()[0].msg, errors: errors.array() });
-    }
+    if (!handleValidation(req, res)) return;
 
     if (!req.file) {
       return res.status(400).json({ message: 'Adjuntá una foto o PDF de tu receta' });
@@ -75,6 +81,8 @@ async function adminListRecetas(req, res, next) {
 
 async function adminUpdateRecetaEstado(req, res, next) {
   try {
+    if (!handleValidation(req, res)) return;
+
     const { estado } = req.body;
     const ESTADOS_VALIDOS = ['pendiente', 'contactado', 'cotizado', 'descartado'];
 
@@ -95,6 +103,8 @@ async function adminUpdateRecetaEstado(req, res, next) {
 
 async function adminUpdateReceta(req, res, next) {
   try {
+    if (!handleValidation(req, res)) return;
+
     const { nombre, contacto, comentario } = req.body;
 
     if (nombre !== undefined && !String(nombre).trim()) {

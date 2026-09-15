@@ -55,6 +55,8 @@ async function getMe(req, res) {
 
 async function updateMe(req, res, next) {
   try {
+    if (!handleValidation(req, res)) return;
+
     const { nombre, telefono, direccion } = req.body;
 
     if (nombre !== undefined) req.user.nombre = nombre;
