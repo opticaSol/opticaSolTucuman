@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { fetchActivePromotions } from '../lib/api';
+import { fetchActivePromotions, fetchActiveHeroSlides } from '../lib/api';
 import HeroPromoCarousel from '../components/home/HeroPromoCarousel';
 import PromosDelMes from '../components/home/PromosDelMes';
 import CatalogoCompleto from '../components/home/CatalogoCompleto';
-import Destacados from '../components/home/Destacados';
 import Servicios from '../components/home/Servicios';
 import BeneficiosRecetados from '../components/home/BeneficiosRecetados';
 import PruebaSocial from '../components/home/PruebaSocial';
@@ -14,10 +13,12 @@ import SectionDivider from '../components/ui/SectionDivider';
 
 export default function Home() {
   const [promotions, setPromotions] = useState([]);
+  const [heroSlides, setHeroSlides] = useState([]);
   const location = useLocation();
 
   useEffect(() => {
     fetchActivePromotions().then(setPromotions).catch(() => setPromotions([]));
+    fetchActiveHeroSlides().then(setHeroSlides).catch(() => setHeroSlides([]));
   }, []);
 
   useEffect(() => {
@@ -43,13 +44,12 @@ export default function Home() {
 
   return (
     <>
-      <HeroPromoCarousel promotions={promotions} />
+      <HeroPromoCarousel slides={heroSlides} />
       <SectionDivider from="negro" to="amarillo" />
       <PromosDelMes promotions={promotions} />
       <SectionDivider from="amarillo" to="negro" flip />
-      <Destacados />
-      <CatalogoCompleto />
       <Servicios />
+      <CatalogoCompleto />
       <PruebaSocial />
       <SectionDivider from="negro" to="amarillo" />
       <BeneficiosRecetados />
