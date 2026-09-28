@@ -4,19 +4,19 @@ import ProtectedRoute from './components/auth/ProtectedRoute';
 import AdminLayout from './components/admin/AdminLayout';
 import Home from './pages/Home';
 import ProductoDetalle from './pages/ProductoDetalle';
-import Carrito from './pages/Carrito';
-import MiCuenta from './pages/MiCuenta';
-import Login from './pages/Login';
-import Registro from './pages/Registro';
-import CheckoutResultado from './pages/CheckoutResultado';
 import SubirReceta from './pages/SubirReceta';
 import Dashboard from './pages/admin/Dashboard';
 import Productos from './pages/admin/Productos';
 import ProductoForm from './pages/admin/ProductoForm';
 import Promociones from './pages/admin/Promociones';
 import PromocionForm from './pages/admin/PromocionForm';
-import Pedidos from './pages/admin/Pedidos';
+import HeroSlides from './pages/admin/HeroSlides';
+import HeroSlideForm from './pages/admin/HeroSlideForm';
 import Recetas from './pages/admin/Recetas';
+import SuperAdminDashboard from './pages/superadmin/SuperAdminDashboard';
+import Clientes from './pages/superadmin/Clientes';
+import PromoMessage from './pages/superadmin/PromoMessage';
+import Envio from './pages/superadmin/Envio';
 
 // El catálogo ahora vive dentro del Home (sección #catalogo). Esto conserva
 // funcionando los links viejos a /catalogo (compartidos antes de este cambio).
@@ -32,26 +32,7 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/catalogo" element={<RedirectToCatalogo />} />
         <Route path="/producto/:id" element={<ProductoDetalle />} />
-        <Route path="/carrito" element={<Carrito />} />
-        <Route path="/login" element={<Login />} />
         <Route path="/subir-receta" element={<SubirReceta />} />
-        <Route path="/registro" element={<Registro />} />
-        <Route
-          path="/mi-cuenta"
-          element={
-            <ProtectedRoute>
-              <MiCuenta />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/checkout/resultado"
-          element={
-            <ProtectedRoute>
-              <CheckoutResultado />
-            </ProtectedRoute>
-          }
-        />
       </Route>
 
       <Route
@@ -67,8 +48,23 @@ export default function App() {
         <Route path="productos/:id" element={<ProductoForm />} />
         <Route path="promociones" element={<Promociones />} />
         <Route path="promociones/:id" element={<PromocionForm />} />
-        <Route path="pedidos" element={<Pedidos />} />
+        <Route path="hero-slides" element={<HeroSlides />} />
+        <Route path="hero-slides/:id" element={<HeroSlideForm />} />
         <Route path="recetas" element={<Recetas />} />
+      </Route>
+
+      <Route
+        path="/superadmin"
+        element={
+          <ProtectedRoute role="superadmin">
+            <AdminLayout />
+          </ProtectedRoute>
+        }
+      >
+        <Route index element={<SuperAdminDashboard />} />
+        <Route path="clientes" element={<Clientes />} />
+        <Route path="promo" element={<PromoMessage />} />
+        <Route path="envio" element={<Envio />} />
       </Route>
     </Routes>
   );

@@ -14,6 +14,10 @@ function calcularBadges(product) {
     badges.push('Más vendido');
   }
 
+  if (product.usoAnual) {
+    badges.push('Uso anual · No descartables');
+  }
+
   // Se puede comprar aunque no haya stock (se pide al proveedor), así que no hay
   // badge de "Agotado": solo se avisa cuando quedan pocas unidades en stock real.
   if (product.stock > 0 && product.stock <= product.umbralStockBajo) {

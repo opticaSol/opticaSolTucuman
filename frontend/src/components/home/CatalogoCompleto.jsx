@@ -49,6 +49,12 @@ const CATEGORIA_ICON = {
       <circle cx="12" cy="11" r="2.5" />
     </svg>
   ),
+  cristales: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+      <path d="M3 4h18l-2 6a7 7 0 0 1-14 0L3 4Z" />
+      <path d="M8 4v3M16 4v3" />
+    </svg>
+  ),
 };
 
 export default function CatalogoCompleto() {

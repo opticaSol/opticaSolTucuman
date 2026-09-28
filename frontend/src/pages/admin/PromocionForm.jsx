@@ -15,6 +15,7 @@ const CATEGORIAS = [
   { value: 'armazones', label: 'Armazones de Receta' },
   { value: 'liquidos', label: 'Líquidos' },
   { value: 'colgantes', label: 'Colgantes' },
+  { value: 'cristales', label: 'Cristales' },
 ];
 
 function toDateInput(value) {

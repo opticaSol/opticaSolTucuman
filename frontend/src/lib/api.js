@@ -25,11 +25,6 @@ api.interceptors.response.use(
   }
 );
 
-export async function registerUser(payload) {
-  const { data } = await api.post('/auth/register', payload);
-  return data;
-}
-
 export async function loginUser(payload) {
   const { data } = await api.post('/auth/login', payload);
   return data;
@@ -67,6 +62,36 @@ export async function fetchFilterOptions() {
 
 export async function fetchActivePromotions() {
   const { data } = await api.get('/promotions/active');
+  return data;
+}
+
+export async function fetchActiveHeroSlides() {
+  const { data } = await api.get('/hero-slides/active');
+  return data;
+}
+
+export async function fetchAdminHeroSlides() {
+  const { data } = await api.get('/admin/hero-slides');
+  return data;
+}
+
+export async function fetchAdminHeroSlide(id) {
+  const { data } = await api.get(`/admin/hero-slides/${id}`);
+  return data;
+}
+
+export async function createHeroSlide(payload) {
+  const { data } = await api.post('/admin/hero-slides', payload);
+  return data;
+}
+
+export async function updateHeroSlide(id, payload) {
+  const { data } = await api.put(`/admin/hero-slides/${id}`, payload);
+  return data;
+}
+
+export async function deleteHeroSlide(id) {
+  const { data } = await api.delete(`/admin/hero-slides/${id}`);
   return data;
 }
 
@@ -139,51 +164,6 @@ export async function uploadImage(file, tipo = 'productos') {
   return data;
 }
 
-export async function createOrder(items, telefono) {
-  const { data } = await api.post('/orders', { items, telefono });
-  return data;
-}
-
-export async function fetchOrder(id) {
-  const { data } = await api.get(`/orders/${id}`);
-  return data;
-}
-
-export async function deleteOrder(id) {
-  const { data } = await api.delete(`/orders/${id}`);
-  return data;
-}
-
-export async function simulateOrderPayment(id, aprobado) {
-  const { data } = await api.post(`/orders/${id}/simular`, { aprobado });
-  return data;
-}
-
-export async function fetchMyOrders(params = {}) {
-  const { data } = await api.get('/orders/mine', { params });
-  return data;
-}
-
-export async function fetchAdminOrders(params = {}) {
-  const { data } = await api.get('/admin/orders', { params });
-  return data;
-}
-
-export async function updateOrderStatus(id, estado) {
-  const { data } = await api.put(`/admin/orders/${id}/estado`, { estado });
-  return data;
-}
-
-export async function updateAdminOrder(id, payload) {
-  const { data } = await api.put(`/admin/orders/${id}`, payload);
-  return data;
-}
-
-export async function deleteAdminOrder(id) {
-  const { data } = await api.delete(`/admin/orders/${id}`);
-  return data;
-}
-
 export async function submitReceta({ nombre, contacto, comentario, archivo }) {
   const formData = new FormData();
   formData.append('nombre', nombre);
@@ -214,6 +194,41 @@ export async function updateReceta(id, payload) {
 
 export async function deleteReceta(id) {
   const { data } = await api.delete(`/admin/recetas/${id}`);
+  return data;
+}
+
+export async function fetchSuperAdminDashboard() {
+  const { data } = await api.get('/superadmin/dashboard');
+  return data;
+}
+
+export async function fetchClients(params = {}) {
+  const { data } = await api.get('/superadmin/clientes', { params });
+  return data;
+}
+
+export async function createClient(payload) {
+  const { data } = await api.post('/superadmin/clientes', payload);
+  return data;
+}
+
+export async function updateClient(id, payload) {
+  const { data } = await api.put(`/superadmin/clientes/${id}`, payload);
+  return data;
+}
+
+export async function deleteClient(id) {
+  const { data } = await api.delete(`/superadmin/clientes/${id}`);
+  return data;
+}
+
+export async function fetchPromoMessage() {
+  const { data } = await api.get('/superadmin/promo');
+  return data;
+}
+
+export async function updatePromoMessage(payload) {
+  const { data } = await api.put('/superadmin/promo', payload);
   return data;
 }
 

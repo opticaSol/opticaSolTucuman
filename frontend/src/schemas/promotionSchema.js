@@ -21,7 +21,7 @@ export const promotionSchema = z
     fechaFin: z.string().optional().or(z.literal('')),
     bannerImagen: z.string().url('Subí un banner'),
     categoriasIncluidas: z
-      .array(z.enum(['sol', 'contacto', 'recetados', 'armazones', 'liquidos', 'colgantes']))
+      .array(z.enum(['sol', 'contacto', 'recetados', 'armazones', 'liquidos', 'colgantes', 'cristales']))
       .optional(),
     activa: z.boolean().optional(),
   })

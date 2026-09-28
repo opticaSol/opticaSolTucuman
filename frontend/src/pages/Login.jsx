@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Swal from 'sweetalert2';
 import { loginSchema } from '../schemas/authSchemas';
@@ -11,7 +11,6 @@ import AuthLayout from '../components/auth/AuthLayout';
 
 export default function Login() {
   const navigate = useNavigate();
-  const location = useLocation();
   const setSession = useUserStore((s) => s.setSession);
 
   const {
@@ -24,8 +23,7 @@ export default function Login() {
     try {
       const data = await loginUser(values);
       setSession(data);
-      const destino = data.user?.rol === 'admin' ? '/admin' : location.state?.from || '/mi-cuenta';
-      navigate(destino, { replace: true });
+      navigate('/admin', { replace: true });
     } catch (err) {
       Swal.fire({
         icon: 'error',
@@ -40,8 +38,8 @@ export default function Login() {
 
   return (
     <AuthLayout>
-      <h1 className="font-display font-black text-2xl uppercase mb-1">Iniciar sesión</h1>
-      <p className="text-sm text-sol-blanco/50 mb-8">Entrá para ver tus pedidos y tu perfil.</p>
+      <h1 className="font-display font-black text-2xl uppercase mb-1">Panel Admin</h1>
+      <p className="text-sm text-sol-blanco/50 mb-8">Iniciá sesión para administrar el sitio.</p>
 
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
         <div>
@@ -75,13 +73,6 @@ export default function Login() {
           {isSubmitting ? 'Ingresando...' : 'Ingresar'}
         </motion.button>
       </form>
-
-      <p className="text-center text-sm text-sol-blanco/60 mt-6">
-        ¿No tenés cuenta?{' '}
-        <Link to="/registro" className="text-sol-amarillo font-bold hover:underline">
-          Registrate
-        </Link>
-      </p>
     </AuthLayout>
   );
 }

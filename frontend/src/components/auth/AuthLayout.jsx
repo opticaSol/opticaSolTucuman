@@ -26,8 +26,7 @@ export default function AuthLayout({ children }) {
             <span className="text-sol-amarillo">nuestra pasión</span>
           </h2>
           <p className="text-sol-blanco/60 max-w-xs">
-            Sumate a la comunidad Óptica Sol y accedé a tus pedidos, promos y presupuestos desde
-            un solo lugar.
+            Panel de administración de Óptica Sol.
           </p>
           <div className="flex gap-8 mt-8">
             <div>

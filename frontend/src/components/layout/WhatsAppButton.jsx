@@ -1,9 +1,9 @@
-const WHATSAPP_URL = 'https://wa.link/s1krfl';
+import { buildWhatsAppLink } from '../../lib/whatsapp';
 
 export default function WhatsAppButton() {
   return (
     <a
-      href={WHATSAPP_URL}
+      href={buildWhatsAppLink('Hola Óptica Sol! Quiero hacer una consulta.')}
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Consultar por WhatsApp"

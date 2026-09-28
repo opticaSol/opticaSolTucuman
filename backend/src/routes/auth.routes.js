@@ -1,25 +1,19 @@
 const express = require('express');
 const { body } = require('express-validator');
-const { register, login, getMe, updateMe } = require('../controllers/auth.controller');
+const rateLimit = require('express-rate-limit');
+const { login, getMe, updateMe } = require('../controllers/auth.controller');
 const { protect } = require('../middleware/auth');
 const { NOMBRE_REGEX, NOMBRE_REGEX_MSG, TELEFONO_REGEX, TELEFONO_REGEX_MSG } = require('../utils/validationPatterns');
 
 const router = express.Router();
 
-const registerValidation = [
-  body('nombre')
-    .trim()
-    .notEmpty()
-    .withMessage('El nombre es obligatorio')
-    .isLength({ min: 2, max: 80 })
-    .withMessage('El nombre debe tener entre 2 y 80 caracteres')
-    .matches(NOMBRE_REGEX)
-    .withMessage(NOMBRE_REGEX_MSG),
-  body('email').trim().isLength({ max: 254 }).withMessage('El email es demasiado largo').isEmail().withMessage('Ingresá un email válido').normalizeEmail(),
-  body('password')
-    .isLength({ min: 6, max: 72 })
-    .withMessage('La contraseña debe tener entre 6 y 72 caracteres'),
-];
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { message: 'Demasiados intentos de inicio de sesión. Esperá unos minutos e intentá de nuevo.' },
+});
 
 const loginValidation = [
   body('email').trim().isEmail().withMessage('Ingresá un email válido').normalizeEmail(),
@@ -44,8 +38,7 @@ const updateMeValidation = [
   body('direccion').optional({ checkFalsy: true }).trim().isLength({ max: 200 }).withMessage('La dirección es demasiado larga'),
 ];
 
-router.post('/register', registerValidation, register);
-router.post('/login', loginValidation, login);
+router.post('/login', loginLimiter, loginValidation, login);
 router.get('/me', protect, getMe);
 router.put('/me', protect, updateMeValidation, updateMe);
 
