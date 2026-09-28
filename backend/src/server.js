@@ -2,7 +2,6 @@ require('dotenv').config();
 
 const app = require('./app');
 const connectDB = require('./config/db');
-const { iniciarSincronizacionPeriodica } = require('./jobs/syncPendingOrders');
 
 const PORT = process.env.PORT || 4000;
 
@@ -11,7 +10,6 @@ async function start() {
   app.listen(PORT, () => {
     console.log(`Servidor Óptica Sol escuchando en http://localhost:${PORT}`);
   });
-  iniciarSincronizacionPeriodica();
 }
 
 start().catch((err) => {
