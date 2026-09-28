@@ -15,7 +15,7 @@ const userSchema = new mongoose.Schema(
     passwordHash: { type: String, required: true },
     telefono: { type: String, default: '' },
     direccion: { type: String, default: '' },
-    rol: { type: String, enum: ['cliente', 'admin'], default: 'cliente' },
+    rol: { type: String, enum: ['cliente', 'admin', 'superadmin'], default: 'cliente' },
   },
   { timestamps: true }
 );

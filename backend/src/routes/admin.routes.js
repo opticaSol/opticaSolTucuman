@@ -21,22 +21,23 @@ const {
   deletePromotion,
 } = require('../controllers/promotion.controller');
 const {
-  adminListOrders,
-  adminUpdateOrder,
-  adminDeleteOrder,
-  adminUpdateOrderStatus,
-} = require('../controllers/order.controller');
-const {
   adminListRecetas,
   adminUpdateReceta,
   adminDeleteReceta,
   adminUpdateRecetaEstado,
 } = require('../controllers/receta.controller');
-const { NOMBRE_REGEX, NOMBRE_REGEX_MSG, TELEFONO_REGEX, TELEFONO_REGEX_MSG } = require('../utils/validationPatterns');
+const {
+  adminListHeroSlides,
+  adminGetHeroSlide,
+  createHeroSlide,
+  updateHeroSlide,
+  deleteHeroSlide,
+} = require('../controllers/heroSlide.controller');
+const { NOMBRE_REGEX, NOMBRE_REGEX_MSG } = require('../utils/validationPatterns');
 
 const router = express.Router();
 
-router.use(protect, authorize('admin'));
+router.use(protect, authorize('admin', 'superadmin'));
 
 router.get('/dashboard', getDashboardStats);
 
@@ -48,7 +49,7 @@ const productValidation = [
     .isLength({ max: 120 })
     .withMessage('El nombre es demasiado largo (máximo 120 caracteres)'),
   body('categoria')
-    .isIn(['sol', 'contacto', 'recetados', 'armazones', 'liquidos', 'colgantes'])
+    .isIn(['sol', 'contacto', 'recetados', 'armazones', 'liquidos', 'colgantes', 'cristales'])
     .withMessage('Categoría inválida'),
   body('marca')
     .trim()
@@ -57,7 +58,9 @@ const productValidation = [
     .isLength({ max: 60 })
     .withMessage('La marca es demasiado larga (máximo 60 caracteres)'),
   body('precio').isFloat({ min: 0, max: 99999999 }).withMessage('El precio debe ser un número válido'),
-  body('stock').isInt({ min: 0, max: 999999 }).withMessage('El stock debe ser un número entero válido'),
+  body('mostrarPrecio').optional().isBoolean().withMessage('Formato inválido'),
+  body('stock').optional().isInt({ min: 0, max: 999999 }).withMessage('El stock debe ser un número entero válido'),
+  body('usoAnual').optional().isBoolean().withMessage('Formato inválido'),
   body('imagenes').isArray().withMessage('Formato de imágenes inválido'),
   body('videos').optional().isArray().withMessage('Formato de videos inválido'),
   body('descripcion').optional({ checkFalsy: true }).trim().isLength({ max: 1000 }).withMessage('La descripción es demasiado larga'),
@@ -70,7 +73,7 @@ const bulkProductValidation = [
   body('videos').optional().isArray().withMessage('Formato de videos inválido'),
   body('categoria')
     .optional()
-    .isIn(['sol', 'contacto', 'recetados', 'armazones', 'liquidos', 'colgantes'])
+    .isIn(['sol', 'contacto', 'recetados', 'armazones', 'liquidos', 'colgantes', 'cristales'])
     .withMessage('Categoría inválida'),
 ];
 
@@ -101,28 +104,6 @@ router.post('/promotions', promotionValidation, createPromotion);
 router.put('/promotions/:id', promotionValidation, updatePromotion);
 router.delete('/promotions/:id', deletePromotion);
 
-const orderUpdateValidation = [
-  body('telefonoContacto')
-    .optional({ checkFalsy: true })
-    .trim()
-    .isLength({ min: 6, max: 20 })
-    .withMessage('Ingresá un teléfono de contacto válido')
-    .matches(TELEFONO_REGEX)
-    .withMessage(TELEFONO_REGEX_MSG),
-  body('direccionEntrega').optional({ checkFalsy: true }).trim().isLength({ max: 200 }).withMessage('La dirección es demasiado larga'),
-];
-
-const orderEstadoValidation = [
-  body('estado')
-    .isIn(['pagado', 'en_preparacion', 'listo', 'entregado', 'cancelado'])
-    .withMessage('Estado inválido'),
-];
-
-router.get('/orders', adminListOrders);
-router.put('/orders/:id', orderUpdateValidation, adminUpdateOrder);
-router.delete('/orders/:id', adminDeleteOrder);
-router.put('/orders/:id/estado', orderEstadoValidation, adminUpdateOrderStatus);
-
 const recetaUpdateValidation = [
   body('nombre')
     .optional()
@@ -143,6 +124,25 @@ router.get('/recetas', adminListRecetas);
 router.put('/recetas/:id', recetaUpdateValidation, adminUpdateReceta);
 router.delete('/recetas/:id', adminDeleteReceta);
 router.put('/recetas/:id/estado', recetaEstadoValidation, adminUpdateRecetaEstado);
+
+const heroSlideValidation = [
+  body('titulo').trim().notEmpty().withMessage('El título es obligatorio').isLength({ max: 100 }).withMessage('El título es demasiado largo'),
+  body('subtitulo').optional({ checkFalsy: true }).trim().isLength({ max: 150 }).withMessage('El subtítulo es demasiado largo'),
+  body('imagen').trim().notEmpty().withMessage('La imagen es obligatoria'),
+  body('mensajeWhatsApp')
+    .trim()
+    .notEmpty()
+    .withMessage('El mensaje de WhatsApp es obligatorio')
+    .isLength({ max: 300 })
+    .withMessage('El mensaje es demasiado largo'),
+  body('orden').optional().isInt({ min: 0, max: 9999 }).withMessage('Orden inválido'),
+];
+
+router.get('/hero-slides', adminListHeroSlides);
+router.get('/hero-slides/:id', adminGetHeroSlide);
+router.post('/hero-slides', heroSlideValidation, createHeroSlide);
+router.put('/hero-slides/:id', heroSlideValidation, updateHeroSlide);
+router.delete('/hero-slides/:id', deleteHeroSlide);
 
 router.post('/uploads', upload.single('image'), uploadImage);
 
