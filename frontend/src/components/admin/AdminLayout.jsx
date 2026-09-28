@@ -5,16 +5,56 @@ import { useUserStore } from '../../store/useUserStore';
 import { confirmLogout } from '../../lib/confirmLogout';
 
 const links = [
-  { to: '/admin', label: 'Dashboard', end: true },
+  { to: '/admin', label: 'Panel principal', end: true },
   { to: '/admin/productos', label: 'Productos' },
   { to: '/admin/promociones', label: 'Promociones' },
-  { to: '/admin/pedidos', label: 'Pedidos' },
+  { to: '/admin/hero-slides', label: 'Sección principal' },
   { to: '/admin/recetas', label: 'Recetas' },
 ];
+
+const superadminLinks = [
+  { to: '/superadmin', label: 'Panel del dueño', end: true },
+  { to: '/superadmin/clientes', label: 'Clientes' },
+  { to: '/superadmin/promo', label: 'Mensaje promo' },
+  { to: '/superadmin/envio', label: 'Enviar promo' },
+];
+
+function SidebarNav({ items }) {
+  return (
+    <nav className="flex flex-col gap-1">
+      {items.map((link) => (
+        <NavLink
+          key={link.to}
+          to={link.to}
+          end={link.end}
+          className={({ isActive }) =>
+            `relative isolate rounded-full px-4 py-2 text-sm font-display font-bold transition-colors ${
+              isActive ? 'text-sol-negro' : 'text-sol-blanco/70 hover:bg-sol-blanco/5'
+            }`
+          }
+        >
+          {({ isActive }) => (
+            <>
+              {isActive && (
+                <motion.span
+                  layoutId="admin-nav-active"
+                  transition={{ type: 'spring', stiffness: 400, damping: 32 }}
+                  className="absolute inset-0 rounded-full bg-sol-amarillo -z-10"
+                />
+              )}
+              {link.label}
+            </>
+          )}
+        </NavLink>
+      ))}
+    </nav>
+  );
+}
 
 export default function AdminLayout() {
   const user = useUserStore((s) => s.user);
   const logout = useUserStore((s) => s.logout);
+  const isSuperAdmin = useUserStore((s) => s.isSuperAdmin());
   const navigate = useNavigate();
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -78,38 +118,16 @@ export default function AdminLayout() {
           </button>
         </div>
 
-        <nav className="flex flex-col gap-1">
-          {links.map((link) => (
-            <NavLink
-              key={link.to}
-              to={link.to}
-              end={link.end}
-              className={({ isActive }) =>
-                `relative isolate rounded-full px-4 py-2 text-sm font-display font-bold transition-colors ${
-                  isActive ? 'text-sol-negro' : 'text-sol-blanco/70 hover:bg-sol-blanco/5'
-                }`
-              }
-            >
-              {({ isActive }) => (
-                <>
-                  {isActive && (
-                    <motion.span
-                      layoutId="admin-nav-active"
-                      transition={{ type: 'spring', stiffness: 400, damping: 32 }}
-                      className="absolute inset-0 rounded-full bg-sol-amarillo -z-10"
-                    />
-                  )}
-                  {link.label}
-                </>
-              )}
-            </NavLink>
-          ))}
-        </nav>
+        <SidebarNav items={links} />
+
+        {isSuperAdmin && (
+          <div className="flex flex-col gap-2">
+            <p className="text-[10px] uppercase tracking-[0.2em] text-sol-blanco/30 px-4">Dueño</p>
+            <SidebarNav items={superadminLinks} />
+          </div>
+        )}
 
         <div className="mt-auto flex flex-col gap-3">
-          <NavLink to="/mi-cuenta" className="text-xs text-sol-blanco/50 hover:text-sol-amarillo">
-            Mi perfil
-          </NavLink>
           <NavLink to="/" className="text-xs text-sol-blanco/50 hover:text-sol-amarillo">
             ← Volver al sitio
           </NavLink>

@@ -1,16 +1,21 @@
-import { Navigate, useLocation } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { useUserStore } from '../../store/useUserStore';
+import Login from '../../pages/Login';
 
 export default function ProtectedRoute({ children, role }) {
-  const location = useLocation();
   const isAuthenticated = useUserStore((s) => s.isAuthenticated());
-  const user = useUserStore((s) => s.user);
+  const isAdmin = useUserStore((s) => s.isAdmin());
+  const isSuperAdmin = useUserStore((s) => s.isSuperAdmin());
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" state={{ from: location.pathname }} replace />;
+    return <Login />;
   }
 
-  if (role && user?.rol !== role) {
+  if (role === 'admin' && !isAdmin) {
+    return <Navigate to="/" replace />;
+  }
+
+  if (role === 'superadmin' && !isSuperAdmin) {
     return <Navigate to="/" replace />;
   }
 
