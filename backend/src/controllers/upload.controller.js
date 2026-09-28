@@ -16,7 +16,7 @@ async function uploadImage(req, res, next) {
       return res.status(400).json({ message: 'No se recibió ningún archivo' });
     }
 
-    const tipo = req.query.tipo === 'promos' ? 'promos' : 'productos';
+    const tipo = ['promos', 'hero'].includes(req.query.tipo) ? req.query.tipo : 'productos';
     const esVideo = req.file.mimetype.startsWith('video/');
     // Los videos de celular (ej. .mov/HEVC de iPhone) no se reproducen en la
     // mayoría de los navegadores: los pasamos siempre a mp4/h264 al subirlos.
