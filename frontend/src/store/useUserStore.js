@@ -12,7 +12,8 @@ export const useUserStore = create(
       logout: () => set({ user: null, token: null }),
 
       isAuthenticated: () => Boolean(get().token),
-      isAdmin: () => get().user?.rol === 'admin',
+      isAdmin: () => ['admin', 'superadmin'].includes(get().user?.rol),
+      isSuperAdmin: () => get().user?.rol === 'superadmin',
     }),
     { name: 'opticasol-user' }
   )
