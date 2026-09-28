@@ -7,7 +7,7 @@ const productSchema = new mongoose.Schema(
     categoria: {
       type: String,
       required: true,
-      enum: ['sol', 'contacto', 'recetados', 'armazones', 'liquidos', 'colgantes'],
+      enum: ['sol', 'contacto', 'recetados', 'armazones', 'liquidos', 'colgantes', 'cristales'],
     },
     // Requerido para 'sol' y 'armazones'
     subcategoriaGenero: {
@@ -18,7 +18,7 @@ const productSchema = new mongoose.Schema(
     // Requerido para 'contacto'
     tipoContacto: {
       type: String,
-      enum: ['diarias', 'mensuales', 'toricas', 'color', null],
+      enum: ['diarias', 'mensuales', 'toricas', 'color', 'anual', null],
       default: null,
     },
     // Requerido para 'recetados'
@@ -31,8 +31,12 @@ const productSchema = new mongoose.Schema(
     marca: { type: String, required: true, trim: true },
     precio: { type: Number, required: true, min: 0 },
     precioDescuento: { type: Number, min: 0, default: null },
+    // Si es false, el catálogo muestra "Consultar precio" en vez del monto.
+    mostrarPrecio: { type: Boolean, default: true },
 
-    stock: { type: Number, required: true, min: 0, default: 0 },
+    // Ya no bloquea nada (no hay compra online): queda como referencia
+    // interna opcional para el admin.
+    stock: { type: Number, min: 0, default: 0 },
     umbralStockBajo: { type: Number, min: 0, default: 5 },
 
     // La validación de "al menos una imagen o video" se hace en el
@@ -46,6 +50,9 @@ const productSchema = new mongoose.Schema(
     proteccionUV: { type: Boolean, default: false },
     irrompible: { type: Boolean, default: false },
     colorArmazon: { type: String, default: '' },
+    // Lentes de contacto blandas de uso anual (no descartables): dispara el
+    // badge "Uso anual · No descartables" en el catálogo.
+    usoAnual: { type: Boolean, default: false },
 
     ventasCount: { type: Number, default: 0 },
     activo: { type: Boolean, default: true },
