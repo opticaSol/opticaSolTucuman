@@ -20,6 +20,7 @@ export const CATEGORIA_LABEL = {
   armazones: 'Armazones de Receta',
   liquidos: 'Líquidos',
   colgantes: 'Colgantes',
+  cristales: 'Cristales',
 };
 
 export function formatDescuento(promo) {
@@ -32,6 +33,7 @@ export const TIPO_CONTACTO_LABEL = {
   mensuales: 'Mensuales',
   toricas: 'Tóricas',
   color: 'Color',
+  anual: 'Anual',
 };
 
 export const TIPO_LENTE_RECETADO_LABEL = {
