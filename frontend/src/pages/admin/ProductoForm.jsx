@@ -15,9 +15,10 @@ const CATEGORIAS = [
   { value: 'armazones', label: 'Armazones de Receta' },
   { value: 'liquidos', label: 'Líquidos' },
   { value: 'colgantes', label: 'Colgantes' },
+  { value: 'cristales', label: 'Cristales' },
 ];
 const GENEROS = ['dama', 'caballero', 'niños'];
-const TIPOS_CONTACTO = ['diarias', 'mensuales', 'toricas', 'color'];
+const TIPOS_CONTACTO = ['diarias', 'mensuales', 'toricas', 'color', 'anual'];
 const TIPOS_LENTE_RECETADO = ['multifocales', 'bifocales', 'ocupacionales', 'monofocales'];
 
 const emptyValues = {
@@ -29,6 +30,7 @@ const emptyValues = {
   marca: '',
   precio: 0,
   precioDescuento: '',
+  mostrarPrecio: true,
   stock: 0,
   umbralStockBajo: 5,
   imagenes: [],
@@ -38,6 +40,7 @@ const emptyValues = {
   proteccionUV: false,
   irrompible: false,
   colorArmazon: '',
+  usoAnual: false,
   activo: true,
   destacado: false,
 };
@@ -189,6 +192,11 @@ export default function ProductoForm() {
           </Field>
         </div>
 
+        <label className="flex items-center gap-2 text-sm">
+          <input type="checkbox" {...register('mostrarPrecio')} />
+          Mostrar precio al público (si está desmarcado se muestra "Consultar precio")
+        </label>
+
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Field label="Stock" error={errors.stock?.message}>
             <input type="number" {...register('stock')} className="input" />
@@ -221,6 +229,13 @@ export default function ProductoForm() {
           Armazón irrompible (para niños)
         </label>
 
+        {categoria === 'contacto' && (
+          <label className="flex items-center gap-2 text-sm">
+            <input type="checkbox" {...register('usoAnual')} />
+            Uso anual · No descartables
+          </label>
+        )}
+
         <label className="flex items-center gap-2 text-sm">
           <input type="checkbox" {...register('activo')} />
           Producto activo (visible en el catálogo)
@@ -228,7 +243,7 @@ export default function ProductoForm() {
 
         <label className="flex items-center gap-2 text-sm">
           <input type="checkbox" {...register('destacado')} />
-          Destacado (aparece primero, en la sección de Destacados de la home)
+          Destacado
         </label>
 
         <Field label="Imágenes" error={errors.imagenes?.message}>
