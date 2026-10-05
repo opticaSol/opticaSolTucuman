@@ -49,7 +49,7 @@ const productValidation = [
     .isLength({ max: 120 })
     .withMessage('El nombre es demasiado largo (máximo 120 caracteres)'),
   body('categoria')
-    .isIn(['sol', 'contacto', 'recetados', 'armazones', 'liquidos', 'colgantes', 'cristales'])
+    .isIn(['sol', 'contacto', 'recetados', 'armazones', 'liquidos', 'colgantes', 'cristales', 'insertos'])
     .withMessage('Categoría inválida'),
   body('marca')
     .trim()
@@ -73,7 +73,7 @@ const bulkProductValidation = [
   body('videos').optional().isArray().withMessage('Formato de videos inválido'),
   body('categoria')
     .optional()
-    .isIn(['sol', 'contacto', 'recetados', 'armazones', 'liquidos', 'colgantes', 'cristales'])
+    .isIn(['sol', 'contacto', 'recetados', 'armazones', 'liquidos', 'colgantes', 'cristales', 'insertos'])
     .withMessage('Categoría inválida'),
 ];
 
