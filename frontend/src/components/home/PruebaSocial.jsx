@@ -1,8 +1,7 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import FadeInSection from '../ui/FadeInSection';
-
-const WHATSAPP_URL = 'https://wa.link/s1krfl';
+import { buildWhatsAppLink } from '../../lib/whatsapp';
 
 const STATS = [
   { label: 'Años de trayectoria', valor: '+40' },
@@ -52,11 +51,11 @@ export default function PruebaSocial() {
             </span>
             <h3 className="font-display font-black text-xl uppercase mb-2">Envíos a todo Tucumán</h3>
             <p className="text-sm text-sol-blanco/90 mb-6">
-              Comprá desde donde estés. Consultanos el costo y el tiempo de envío a tu domicilio
-              por WhatsApp.
+              Consultanos el costo y el tiempo de envío a tu domicilio por WhatsApp, sin moverte
+              de tu casa.
             </p>
             <a
-              href={WHATSAPP_URL}
+              href={buildWhatsAppLink('Hola Óptica Sol! Quiero consultar por envíos.')}
               target="_blank"
               rel="noopener noreferrer"
               className="mt-auto inline-flex items-center gap-2 rounded-full bg-sol-negro text-sol-blanco font-display font-bold px-5 py-2.5 w-fit hover:bg-black transition"
