@@ -256,7 +256,7 @@ async function updateProduct(req, res, next) {
   }
 }
 
-const CATEGORIAS_VALIDAS = ['sol', 'contacto', 'recetados', 'armazones', 'liquidos', 'colgantes', 'cristales'];
+const CATEGORIAS_VALIDAS = ['sol', 'contacto', 'recetados', 'armazones', 'liquidos', 'colgantes', 'cristales', 'insertos'];
 
 // Crea un producto "borrador" por cada archivo (nombre/marca/precio de
 // relleno) para no tener que dar de alta uno por uno cuando se cargan muchas
