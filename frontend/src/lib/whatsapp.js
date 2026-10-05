@@ -1,7 +1,7 @@
 // Número de la tienda en formato internacional sin "+" (ej: 549381XXXXXXX).
 // Configurable por variable de entorno; si no está seteada, usa el número
 // real de la óptica como valor por defecto.
-export const WHATSAPP_NUMBER = import.meta.env.VITE_WHATSAPP_NUMBER || '5493815497586';
+export const WHATSAPP_NUMBER = import.meta.env.VITE_WHATSAPP_NUMBER || '5493812122258';
 
 export function buildProductWhatsAppMessage(product) {
   const variante = product?.marca && product.marca !== 'Sin marca' ? ` - ${product.marca}` : '';
