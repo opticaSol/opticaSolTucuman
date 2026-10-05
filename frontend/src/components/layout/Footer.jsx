@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { buildWhatsAppLink } from '../../lib/whatsapp';
 
 const LOGO_URL =
   'https://res.cloudinary.com/dabikk5ei/image/upload/v1787667390/logo_ongamj.png';
@@ -44,7 +45,7 @@ export default function Footer() {
             Contacto
           </h3>
           <a
-            href="https://wa.link/s1krfl"
+            href={buildWhatsAppLink('Hola Óptica Sol! Quiero hacer una consulta.')}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-block text-sm font-display font-bold bg-sol-rojo text-sol-blanco px-4 py-2 rounded-full hover:brightness-95 transition"

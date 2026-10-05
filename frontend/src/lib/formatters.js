@@ -21,6 +21,7 @@ export const CATEGORIA_LABEL = {
   liquidos: 'Líquidos',
   colgantes: 'Colgantes',
   cristales: 'Cristales',
+  insertos: 'Insertos para antiparras',
 };
 
 export function formatDescuento(promo) {

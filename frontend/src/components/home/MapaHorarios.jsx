@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import FadeInSection from '../ui/FadeInSection';
+import { buildWhatsAppLink } from '../../lib/whatsapp';
 
-const WHATSAPP_URL = 'https://wa.link/s1krfl';
 const MAPS_URL = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
   'Av. 24 de Septiembre 838, San Miguel de Tucumán, T4000, TM, AR'
 )}`;
@@ -95,7 +95,7 @@ export default function MapaHorarios() {
           </div>
 
           <motion.a
-            href={WHATSAPP_URL}
+            href={buildWhatsAppLink('Hola Óptica Sol! Quiero consultar por envíos.')}
             target="_blank"
             rel="noopener noreferrer"
             whileHover={{ scale: 1.02 }}

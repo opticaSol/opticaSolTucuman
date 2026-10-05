@@ -4,7 +4,14 @@ const PromoMessage = require('../models/PromoMessage');
 const { normalizeArgentinePhone } = require('../utils/normalizePhone');
 
 const TEXTO_PROMO_DEFAULT =
-  'Hola {nombre}! Te escribimos de Óptica Sol 😊 Esta semana tenemos promociones en cristales, repuestos para anteojos de sol y reparaciones. ¡Te esperamos! Si no querés recibir más mensajes, avisanos.';
+  'Hola {nombre}! Te escribimos de Óptica Sol. Esta semana tenemos promociones en cristales, repuestos para anteojos de sol y reparaciones. ¡Te esperamos! Si no querés recibir más mensajes, avisanos.';
+
+// Escapa caracteres especiales de regex antes de meter texto de un query
+// param en un $regex de Mongo (si no, alguien podría mandar un patrón que
+// cuelgue el servidor, o uno que no haga lo que el campo de búsqueda espera).
+function escapeRegex(str) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
 
 function handleValidation(req, res) {
   const errors = validationResult(req);
@@ -21,9 +28,10 @@ async function listClients(req, res, next) {
 
     const filter = {};
     if (q) {
+      const qSafe = escapeRegex(String(q)).slice(0, 100);
       filter.$or = [
-        { nombre: { $regex: q, $options: 'i' } },
-        { whatsapp: { $regex: q, $options: 'i' } },
+        { nombre: { $regex: qSafe, $options: 'i' } },
+        { whatsapp: { $regex: qSafe, $options: 'i' } },
       ];
     }
     if (aceptaPromos === 'true') filter.aceptaPromos = true;

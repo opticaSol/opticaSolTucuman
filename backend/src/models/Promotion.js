@@ -19,7 +19,7 @@ const promotionSchema = new mongoose.Schema(
 
     categoriasIncluidas: {
       type: [String],
-      enum: ['sol', 'contacto', 'recetados', 'armazones', 'liquidos', 'colgantes', 'cristales'],
+      enum: ['sol', 'contacto', 'recetados', 'armazones', 'liquidos', 'colgantes', 'cristales', 'insertos'],
       default: [],
     },
     productosIncluidos: [

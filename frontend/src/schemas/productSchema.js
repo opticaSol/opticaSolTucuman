@@ -7,7 +7,7 @@ export const productSchema = z
       .trim()
       .min(2, 'El nombre es obligatorio')
       .max(120, 'El nombre es demasiado largo (máximo 120 caracteres)'),
-    categoria: z.enum(['sol', 'contacto', 'recetados', 'armazones', 'liquidos', 'colgantes', 'cristales'], {
+    categoria: z.enum(['sol', 'contacto', 'recetados', 'armazones', 'liquidos', 'colgantes', 'cristales', 'insertos'], {
       errorMap: () => ({ message: 'Elegí una categoría' }),
     }),
     subcategoriaGenero: z.enum(['dama', 'caballero', 'niños']).optional().or(z.literal('')),
