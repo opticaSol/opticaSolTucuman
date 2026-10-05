@@ -16,6 +16,7 @@ const CATEGORIAS = [
   { value: 'liquidos', label: 'Líquidos' },
   { value: 'colgantes', label: 'Colgantes' },
   { value: 'cristales', label: 'Cristales' },
+  { value: 'insertos', label: 'Insertos para antiparras' },
 ];
 const GENEROS = ['dama', 'caballero', 'niños'];
 const TIPOS_CONTACTO = ['diarias', 'mensuales', 'toricas', 'color', 'anual'];
